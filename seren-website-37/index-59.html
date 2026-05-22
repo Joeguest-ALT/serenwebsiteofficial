@@ -838,6 +838,7 @@
     .nav-cta {
       position: relative;
       overflow: hidden;
+      z-index: 0;
     }
     .nav-cta::before {
       content: '';
@@ -846,6 +847,7 @@
       background: linear-gradient(135deg, #ffcb47, #fbbd1e);
       opacity: 0;
       transition: opacity 0.4s;
+      z-index: -1;
     }
     .nav-cta:hover::before {
       opacity: 1;
