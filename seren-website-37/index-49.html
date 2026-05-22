@@ -142,11 +142,7 @@
     .site-nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       padding: 0 48px;
-      background: rgba(14, 44, 83, 0.45);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 4px 32px rgba(0,0,0,0.2);
+      background: transparent;
       transition: background 0.5s cubic-bezier(.4,0,.2,1), box-shadow 0.5s;
     }
     .site-nav.scrolled {
@@ -160,8 +156,8 @@
     .site-nav.dark-hero:not(.scrolled) .nav-logo-text,
     .site-nav.dark-hero:not(.scrolled) .nav-logo-sub,
     .site-nav.dark-hero:not(.scrolled) .nav-links > li > a,
-    .site-nav.dark-hero:not(.scrolled) .nav-links > li > button { color: rgba(255,255,255,0.85) !important; }
-    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline { color: rgba(255,255,255,0.9) !important; border-color: rgba(255,255,255,0.35) !important; }
+    .site-nav.dark-hero:not(.scrolled) .nav-links > li > button { color: rgba(255,255,255,1) !important; text-shadow: 0 1px 12px rgba(0,0,0,0.5), 0 2px 24px rgba(0,0,0,0.3); }
+    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline { color: rgba(255,255,255,1) !important; border-color: rgba(255,255,255,0.5) !important; text-shadow: 0 1px 12px rgba(0,0,0,0.5); }
 
     .nav-inner {
       max-width: 1320px; margin: 0 auto;
