@@ -157,8 +157,8 @@
     .site-nav.dark-hero:not(.scrolled) .nav-logo-sub,
     .site-nav.dark-hero:not(.scrolled) .nav-links > li > a,
     .site-nav.dark-hero:not(.scrolled) .nav-links > li > button { color: rgba(255,255,255,1) !important; text-shadow: 0 1px 6px rgba(0,0,0,0.4); font-weight: 600 !important; }
-    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline { color: #fff !important; border-color: #0E2C53 !important; background: #0E2C53; text-shadow: none; }
-    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline:hover { background: #fff !important; border-color: #0E2C53 !important; color: #0E2C53 !important; }
+    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline { color: #fff !important; border-color: #0E2C53 !important; background: #0E2C53 !important; text-shadow: none; }
+    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline:hover { background: #0E2C53 !important; border-color: #0E2C53 !important; color: #fff !important; transform: translateY(-3px) scale(1.02); box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 12px 40px rgba(14,44,83,0.4) !important; }
 
     .nav-inner {
       max-width: 1320px; margin: 0 auto;
@@ -323,7 +323,6 @@
     }
     .nav-cta-outline:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 12px 40px rgba(14,44,83,0.4); }
     .site-nav.scrolled .nav-cta-outline { color: #fff; border-color: #0E2C53; background: #0E2C53; }
-    .site-nav.dark-hero:not(.scrolled) .nav-cta-outline { color: #fff !important; border-color: #0E2C53 !important; background: #0E2C53 !important; text-shadow: none; }
     .nav-cta {
       background: var(--gold); color: var(--navy);
       padding: 9px 20px; border-radius: 8px;
@@ -852,10 +851,10 @@
       opacity: 1;
     }
     .nav-cta {
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s;
     }
     .nav-cta:hover {
-      transform: translateY(-2px) scale(1.03);
+      transform: translateY(-3px) scale(1.02);
     }
 
     /* ─── RESPONSIVE ─── */
