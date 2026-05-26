@@ -1794,7 +1794,7 @@
     <div class="reveal-right contact-form-col">
       <div style="background:#fff;border-radius:20px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 40px rgba(0,0,0,0.07);padding:48px;scroll-margin-top:100px;" id="form-wrap">
         <h3 style="color:var(--navy);font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;margin-bottom:28px;letter-spacing:-0.02em;">Send us a message</h3>
-        <form id="contact-form" action="https://formspree.io/f/mykonjwz" method="POST" style="display:flex;flex-direction:column;gap:18px;" novalidate>
+        <form id="contact-form" style="display:flex;flex-direction:column;gap:18px;" novalidate>
           <div class="form-row-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div style="display:flex;flex-direction:column;gap:6px;">
               <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-name">Full Name</label>
@@ -1838,11 +1838,15 @@
 </section>
 
 <script>
+const SUPABASE_URL = 'https://wwwfvgqgcwyudsaoszww.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3d2Z2Z3FnY3d5dWRzYW9zend3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzgwMjcsImV4cCI6MjA5NTMxNDAyN30.NZ7HAOUbw8Q2l5wUAAPLOV2XZ70tngVE-Aw6KeR9i80';
+
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const form = e.target;
   const name = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
   const reason = document.getElementById('f-reason').value;
   const message = document.getElementById('f-message').value.trim();
   const errEl = document.getElementById('form-error');
@@ -1861,28 +1865,29 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   submitBtn.disabled = true;
 
   try {
-    // Submit to Formspree
-    const formData = new FormData(form);
-    const response = await fetch(form.action, {
+    // Submit to Supabase
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/enquiries`, {
       method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ name, email, phone, message: `[${reason}] ${message}` })
     });
 
     if (response.ok) {
-      // Success - show confirmation
       form.style.display = 'none';
       document.getElementById('form-success').style.display = 'block';
     } else {
-      // Formspree returned an error
       const data = await response.json().catch(() => ({}));
       errEl.style.display = 'block';
-      errEl.textContent = (data.errors && data.errors[0]?.message) || 'Something went wrong. Please email info@seren.wales directly.';
+      errEl.textContent = 'Something went wrong. Please email info@seren.wales directly.';
       submitBtn.textContent = originalBtnText;
       submitBtn.disabled = false;
     }
   } catch (err) {
-    // Network error - offer mailto fallback
     errEl.style.display = 'block';
     errEl.innerHTML = 'Could not send. Please email <a href="mailto:info@seren.wales" style="color:var(--navy);text-decoration:underline;">info@seren.wales</a> directly.';
     submitBtn.textContent = originalBtnText;
@@ -2377,8 +2382,9 @@ document.getElementById('contact-form').addEventListener('submit', async functio
 (function() {
   'use strict';
 
-  // Formspree endpoint for transcript emails
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mykonjwz';
+  // Supabase endpoint for transcript storage
+  const SUPABASE_URL = 'https://wwwfvgqgcwyudsaoszww.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3d2Z2Z3FnY3d5dWRzYW9zend3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzgwMjcsImV4cCI6MjA5NTMxNDAyN30.NZ7HAOUbw8Q2l5wUAAPLOV2XZ70tngVE-Aw6KeR9i80';
 
   // ════════════════════════════════════════════════════════
   // CONVERSATION TREE
@@ -3073,15 +3079,18 @@ document.getElementById('contact-form').addEventListener('submit', async functio
     });
 
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/enquiries`, {
         method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
         body: JSON.stringify({
-          _subject: 'Seren Chatbot — ' + (userData.name || 'Anonymous') + ' (transcript)',
-          _replyto: userData.email || 'noreply@seren.wales',
-          name: userData.name,
-          email: userData.email,
-          phone: userData.phone,
+          name: userData.name || 'Chatbot enquiry',
+          email: userData.email || 'noreply@seren.wales',
+          phone: userData.phone || '',
           message: body
         })
       });
