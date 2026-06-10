@@ -1,6 +1,6 @@
-/* Seren staff chatbot — front-end layer
- * Attaches a "Staff login" flow to the existing Seren chatbot.
- * Communicates with the staff-chat Supabase Edge Function.
+/* Seren staff chatbot — front-end layer v2
+ * Injects "Staff login" as a matching chatbot-option button in the main menu.
+ * Uses MutationObserver to keep it pinned even when the chatbot re-renders.
  */
 (function () {
   "use strict";
@@ -13,6 +13,7 @@
   const TOKEN_EXPIRY_KEY = "seren_staff_token_expires";
   const WELCOME =
     "Hi 👋 Ask me anything about Seren — policies, pay, who to contact. For anything urgent or person-specific, speak to your team leader.";
+  const STAFF_BTN_FLAG = "data-staff-login-btn";
 
   // ─── Helpers ────────────────────────────────────────────────
   function $(sel, root) { return (root || document).querySelector(sel); }
@@ -50,32 +51,29 @@
     localStorage.removeItem(TOKEN_EXPIRY_KEY);
   }
 
-  // ─── Inject styles ──────────────────────────────────────────
   function injectStyles() {
     if (document.getElementById("seren-staff-styles")) return;
     const css = `
-      .staff-login-link{display:block;text-align:center;margin-top:8px;font-size:11px;color:#888;text-decoration:none;cursor:pointer;padding:4px;}
-      .staff-login-link:hover{color:#0E1B37;}
       .staff-pin-screen{padding:24px 20px;text-align:center;}
-      .staff-pin-screen h3{margin:0 0 8px;color:#0E1B37;font-size:16px;}
+      .staff-pin-screen h3{margin:0 0 8px;color:#0E2C53;font-size:16px;}
       .staff-pin-screen p{margin:0 0 16px;color:#666;font-size:13px;}
-      .staff-pin-input{width:140px;padding:12px;font-size:20px;text-align:center;letter-spacing:8px;border:2px solid #0E1B37;border-radius:8px;outline:none;-webkit-text-security:disc;text-security:disc;}
+      .staff-pin-input{width:140px;padding:12px;font-size:20px;text-align:center;letter-spacing:8px;border:2px solid #0E2C53;border-radius:8px;outline:none;-webkit-text-security:disc;text-security:disc;}
       .staff-pin-input:focus{border-color:#FBBD1E;}
-      .staff-pin-submit{display:block;margin:12px auto 0;padding:10px 28px;background:#0E1B37;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
-      .staff-pin-submit:hover{background:#1a2c54;}
+      .staff-pin-submit{display:block;margin:12px auto 0;padding:10px 28px;background:#0E2C53;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+      .staff-pin-submit:hover{background:#1a3a6b;}
       .staff-pin-submit:disabled{opacity:0.5;cursor:not-allowed;}
       .staff-pin-error{color:#c0392b;font-size:12px;margin-top:8px;min-height:16px;}
       .staff-pin-back{display:inline-block;margin-top:12px;font-size:12px;color:#888;text-decoration:underline;cursor:pointer;background:none;border:none;}
       .staff-msg{padding:10px 14px;border-radius:14px;margin:6px 0;max-width:85%;font-size:14px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;}
-      .staff-msg-user{background:#0E1B37;color:#fff;margin-left:auto;border-bottom-right-radius:4px;}
-      .staff-msg-bot{background:#f1f3f7;color:#0E1B37;border-bottom-left-radius:4px;}
-      .staff-msg-bot strong{color:#0E1B37;}
+      .staff-msg-user{background:#0E2C53;color:#fff;margin-left:auto;border-bottom-right-radius:4px;}
+      .staff-msg-bot{background:#f1f3f7;color:#0E2C53;border-bottom-left-radius:4px;}
+      .staff-msg-bot strong{color:#0E2C53;}
       .staff-typing{display:inline-flex;gap:3px;padding:10px 14px;}
       .staff-typing span{width:6px;height:6px;background:#888;border-radius:50%;animation:staffTypingBounce 1.2s infinite ease-in-out;}
       .staff-typing span:nth-child(2){animation-delay:0.15s;}
       .staff-typing span:nth-child(3){animation-delay:0.3s;}
       @keyframes staffTypingBounce{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-5px);opacity:1;}}
-      .staff-logout{display:inline-block;font-size:11px;color:#888;text-decoration:underline;cursor:pointer;background:none;border:none;padding:4px;}
+      .staff-logout{display:block;margin:8px auto 0;font-size:11px;color:#888;text-decoration:underline;cursor:pointer;background:none;border:none;padding:4px;}
       .staff-logout:hover{color:#c0392b;}
     `;
     const tag = document.createElement("style");
@@ -84,20 +82,45 @@
     document.head.appendChild(tag);
   }
 
-  // ─── State ──────────────────────────────────────────────────
   let mode = "public"; // public | pin | staff
-  let initialised = false;
+  let observerStarted = false;
 
-  // ─── UI builders ────────────────────────────────────────────
-  function addStaffLoginLink() {
-    const footer = $("#chatbot-footer");
-    if (!footer || $(".staff-login-link", footer)) return;
-    const link = document.createElement("a");
-    link.className = "staff-login-link";
-    link.textContent = "Staff login";
-    link.href = "#";
-    link.onclick = (e) => { e.preventDefault(); enterPinMode(); };
-    footer.appendChild(link);
+  function isMainMenuShowing() {
+    const opts = $("#chatbot-options");
+    if (!opts) return false;
+    const buttons = opts.querySelectorAll("button.chatbot-option");
+    for (const b of buttons) {
+      if (/just browsing/i.test(b.textContent)) return true;
+    }
+    return false;
+  }
+
+  function injectStaffButton() {
+    if (mode !== "public") return;
+    const opts = $("#chatbot-options");
+    if (!opts) return;
+    if (opts.querySelector(`[${STAFF_BTN_FLAG}]`)) return;
+    if (!isMainMenuShowing()) return;
+
+    const btn = document.createElement("button");
+    btn.className = "chatbot-option";
+    btn.setAttribute(STAFF_BTN_FLAG, "1");
+    btn.innerHTML = `<span class="chatbot-option-emoji">🔒</span> Staff login`;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      enterPinMode();
+    });
+    opts.appendChild(btn);
+  }
+
+  function startObserver() {
+    if (observerStarted) return;
+    const opts = $("#chatbot-options");
+    if (!opts) return;
+    observerStarted = true;
+    const observer = new MutationObserver(() => injectStaffButton());
+    observer.observe(opts, { childList: true, subtree: false });
+    injectStaffButton();
   }
 
   function clearMessages() {
@@ -122,10 +145,14 @@
 
   function showTextInput() {
     const w = $("#chatbot-text-input-wrap");
-    if (w) w.style.display = "";
+    if (w) w.style.display = "flex";
   }
 
   function enterPinMode() {
+    if (getStoredToken()) {
+      enterStaffMode();
+      return;
+    }
     mode = "pin";
     clearMessages();
     hideOptions();
@@ -143,15 +170,14 @@
       <button class="staff-pin-back" id="staff-pin-back">← Back to main menu</button>
     `;
     msgs.appendChild(screen);
-    const input = $("#staff-pin-input");
-    const submit = $("#staff-pin-submit");
-    const back = $("#staff-pin-back");
-    const errEl = $("#staff-pin-error");
-    setTimeout(() => input?.focus(), 50);
-    input?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") submit?.click();
+    setTimeout(() => $("#staff-pin-input")?.focus(), 50);
+    $("#staff-pin-input")?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") $("#staff-pin-submit")?.click();
     });
-    submit?.addEventListener("click", async () => {
+    $("#staff-pin-submit")?.addEventListener("click", async () => {
+      const input = $("#staff-pin-input");
+      const submit = $("#staff-pin-submit");
+      const errEl = $("#staff-pin-error");
       const pin = input.value.trim();
       errEl.textContent = "";
       if (!/^\d{4,6}$/.test(pin)) {
@@ -176,7 +202,7 @@
         submit.textContent = "Continue";
       }
     });
-    back?.addEventListener("click", () => exitStaffMode());
+    $("#staff-pin-back")?.addEventListener("click", () => exitStaffMode());
   }
 
   function enterStaffMode() {
@@ -185,7 +211,6 @@
     hideOptions();
     showTextInput();
     appendBotMessage(WELCOME);
-    // Wire up the existing send button & input for our use
     const sendBtn = $("#chatbot-send");
     const txtInput = $("#chatbot-text-input");
     if (txtInput && !txtInput.dataset.staffWired) {
@@ -203,18 +228,13 @@
         if (mode === "staff") { e.preventDefault(); sendStaffMessage(); }
       });
     }
-    // Add logout link
-    const footer = $("#chatbot-footer");
-    if (footer) {
-      const existing = $(".staff-login-link", footer);
-      if (existing) existing.remove();
-      if (!$(".staff-logout", footer)) {
-        const out = document.createElement("button");
-        out.className = "staff-logout";
-        out.textContent = "Log out of staff mode";
-        out.onclick = () => logout();
-        footer.appendChild(out);
-      }
+    const msgs = $("#chatbot-messages");
+    if (msgs && msgs.parentElement && !msgs.parentElement.querySelector(".staff-logout")) {
+      const out = document.createElement("button");
+      out.className = "staff-logout";
+      out.textContent = "Log out of staff mode";
+      out.onclick = () => logout();
+      msgs.parentElement.insertBefore(out, msgs.nextSibling);
     }
     setTimeout(() => $("#chatbot-text-input")?.focus(), 100);
   }
@@ -224,12 +244,7 @@
     clearMessages();
     hideTextInput();
     showOptions();
-    // Restore the staff login link, drop the logout
-    const footer = $("#chatbot-footer");
-    if (footer) {
-      $(".staff-logout", footer)?.remove();
-      addStaffLoginLink();
-    }
+    document.querySelectorAll(".staff-logout").forEach(el => el.remove());
   }
 
   async function logout() {
@@ -256,7 +271,6 @@
     if (!msgs) return;
     const el = document.createElement("div");
     el.className = "staff-msg staff-msg-bot";
-    // Render basic markdown: **bold** and line breaks
     const html = String(text)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -310,17 +324,11 @@
     }
   }
 
-  // ─── Boot ───────────────────────────────────────────────────
   function init() {
-    if (initialised) return;
-    if (!$("#seren-chatbot")) return; // chatbot not on this page
-    initialised = true;
+    if (!$("#seren-chatbot")) return;
     injectStyles();
-    addStaffLoginLink();
-    // If a valid session already exists, the user can resume staff mode
-    // by clicking the staff login link — we don't auto-enter on page load
-    // because the chatbot is closed by default and we don't want to
-    // pre-load content the user didn't ask for.
+    startObserver();
+    document.querySelectorAll(".staff-login-link").forEach(el => el.remove());
   }
 
   if (document.readyState === "loading") {
