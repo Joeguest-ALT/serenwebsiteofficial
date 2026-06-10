@@ -223,15 +223,16 @@
       txtInput.addEventListener("keydown", (e) => {
         if (mode === "staff" && e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
+          e.stopImmediatePropagation();
           sendStaffMessage();
         }
-      });
+      }, true);
     }
     if (sendBtn && !sendBtn.dataset.staffWired) {
       sendBtn.dataset.staffWired = "1";
       sendBtn.addEventListener("click", (e) => {
-        if (mode === "staff") { e.preventDefault(); sendStaffMessage(); }
-      });
+        if (mode === "staff") { e.preventDefault(); e.stopImmediatePropagation(); sendStaffMessage(); }
+      }, true);
     }
     const msgs = $("#chatbot-messages");
     if (msgs && msgs.parentElement && !msgs.parentElement.querySelector(".staff-logout")) {
