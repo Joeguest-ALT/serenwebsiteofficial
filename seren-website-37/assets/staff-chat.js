@@ -11,8 +11,11 @@
   const FUNCTION_URL = `${SUPABASE_URL}/functions/v1/staff-chat`;
   const TOKEN_STORAGE_KEY = "seren_staff_token";
   const TOKEN_EXPIRY_KEY = "seren_staff_token_expires";
-  const WELCOME =
-    "Hi 👋 Ask me anything about Seren — policies, pay, who to contact. For anything urgent or person-specific, speak to your team leader.";
+  function welcomeFor(name) {
+    const first = (name || "").split(/\s+/)[0] || "";
+    const greet = first ? `Hi ${first} 👋` : "Hi 👋";
+    return `${greet} Ask me anything about Seren — policies, pay, who to contact. For anything urgent or person-specific, speak to your team leader.`;
+  }
   const STAFF_BTN_FLAG = "data-staff-login-btn";
 
   // ─── Helpers ────────────────────────────────────────────────
@@ -49,6 +52,7 @@
   function clearToken() {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(TOKEN_EXPIRY_KEY);
+    localStorage.removeItem("seren_staff_name");
   }
 
   function injectStyles() {
@@ -164,7 +168,7 @@
     screen.innerHTML = `
       <h3>Staff access</h3>
       <p>Enter your PIN to chat with the staff assistant.</p>
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="staff-pin-input" id="staff-pin-input" autocomplete="off" />
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" minlength="2" class="staff-pin-input" id="staff-pin-input" autocomplete="off" />
       <button class="staff-pin-submit" id="staff-pin-submit">Continue</button>
       <div class="staff-pin-error" id="staff-pin-error"></div>
       <button class="staff-pin-back" id="staff-pin-back">← Back to main menu</button>
@@ -180,8 +184,8 @@
       const errEl = $("#staff-pin-error");
       const pin = input.value.trim();
       errEl.textContent = "";
-      if (!/^\d{4,6}$/.test(pin)) {
-        errEl.textContent = "PIN must be 4–6 digits.";
+      if (!/^\d{2,6}$/.test(pin)) {
+        errEl.textContent = "PIN must be 2–6 digits.";
         return;
       }
       submit.disabled = true;
@@ -190,6 +194,7 @@
         const res = await callFunction({ action: "verify_pin", pin });
         if (res.ok) {
           storeToken(res.token, res.expiresAt);
+          localStorage.setItem("seren_staff_name", res.staff?.name || "");
           enterStaffMode();
         } else {
           errEl.textContent = res.error || "PIN not recognised.";
@@ -210,7 +215,7 @@
     clearMessages();
     hideOptions();
     showTextInput();
-    appendBotMessage(WELCOME);
+    appendBotMessage(welcomeFor(localStorage.getItem("seren_staff_name")));
     const sendBtn = $("#chatbot-send");
     const txtInput = $("#chatbot-text-input");
     if (txtInput && !txtInput.dataset.staffWired) {
