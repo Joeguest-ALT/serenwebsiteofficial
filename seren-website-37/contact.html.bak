@@ -1901,11 +1901,11 @@ document.getElementById('contact-form').addEventListener('submit', async functio
             Regulated &amp; Inspected
           </div>
           <h2 style="font-family:'Poppins',sans-serif;font-size:clamp(26px,3vw,34px);font-weight:800;color:var(--navy);letter-spacing:-0.02em;margin-bottom:14px;">Care Inspectorate Wales</h2>
-          <p style="color:var(--muted);font-size:16px;line-height:1.7;max-width:600px;margin:0 auto;">Seren Support Services is regulated and inspected by Care Inspectorate Wales across every region we serve. View our latest inspection reports and Annual Return below.</p>
+          <p style="color:var(--muted);font-size:16px;line-height:1.7;max-width:600px;margin:0 auto;">Seren Support Services is regulated and inspected by Care Inspectorate Wales across every region we serve. Click any badge to view our latest inspection report.</p>
         </div>
 
-        <!-- 3x2 grid: 5 CIW inspection reports + Annual Return -->
-        <div class="ciw-grid">
+        <!-- ROW 1: 3 cards (Cwm Taf, Cardiff, Gwent) -->
+        <div class="ciw-row ciw-row-3">
           <div class="ciw-card">
             <div class="ciw-region">Cwm Taf<br/><span>Bridgend</span></div>
             <div class="ciw-widget-wrap">
@@ -1927,6 +1927,10 @@ document.getElementById('contact-form').addEventListener('submit', async functio
             </div>
             <a href="https://digital.careinspectorate.wales/widget/SIN-00010353-QMRK" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
           </div>
+        </div>
+
+        <!-- ROW 2: 2 cards (Powys, Western Bay) -->
+        <div class="ciw-row ciw-row-2">
           <div class="ciw-card">
             <div class="ciw-region">Powys<br/><span>&nbsp;</span></div>
             <div class="ciw-widget-wrap">
@@ -1941,56 +1945,25 @@ document.getElementById('contact-form').addEventListener('submit', async functio
             </div>
             <a href="https://digital.careinspectorate.wales/widget/SIN-00010351-VRPV" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
           </div>
-
-          <!-- Annual Return - info-row layout mirrors the CIW rating badges -->
-          <div class="ciw-card">
-            <div class="ciw-region">Annual Return<br/><span>2025 / 2026</span></div>
-            <div class="ciw-widget-wrap">
-              <div class="ciw-annual-panel">
-                <div class="ciw-annual-panel-header">
-                  <img src="assets/seren-icon-yellow.png" alt="" class="ciw-annual-logo" loading="lazy"/>
-                  <span>Seren Support Services Ltd</span>
-                </div>
-                <div class="ciw-annual-panel-body">
-                  <p><strong>Seren Support Services Ltd</strong> is regulated by Care Inspectorate Wales. This Annual Return covers all regional services across Wales.</p>
-                  <div class="ciw-annual-stats">
-                    <div class="ciw-annual-stat">
-                      <span class="ciw-annual-stat-label">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        Reporting Period
-                      </span>
-                      <span class="ciw-annual-stat-value">2025 / 2026</span>
-                    </div>
-                    <div class="ciw-annual-stat">
-                      <span class="ciw-annual-stat-label">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        Services Covered
-                      </span>
-                      <span class="ciw-annual-stat-value">6 regions</span>
-                    </div>
-                    <div class="ciw-annual-stat">
-                      <span class="ciw-annual-stat-label">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        Status
-                      </span>
-                      <span class="ciw-annual-stat-value">Submitted</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <a href="assets/annual-return-2025-2026.html" target="_blank" rel="noopener noreferrer" class="ciw-link">View Annual Return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
         </div>
 
         <style>
-          .ciw-grid {
+          /* Row 1: always 3 columns. Row 2: 2 columns, narrower so it visually balances */
+          .ciw-row-3 {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 340px));
+            grid-template-columns: repeat(3, 340px);
             gap: 24px;
             justify-content: center;
             width: 100%;
             margin: 0 auto;
+          }
+          .ciw-row-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 340px);
+            gap: 24px;
+            justify-content: center;
+            width: 100%;
+            margin: 24px auto 0;
           }
 
           .ciw-card {
@@ -2063,102 +2036,23 @@ document.getElementById('contact-form').addEventListener('submit', async functio
             color: #fff;
             border-color: var(--navy);
           }
-
-          /* ===== Annual Return panel ===== */
-          .ciw-annual-panel {
-            width: 100%;
-            border: 1px solid rgba(14,44,83,0.10);
-            border-radius: 8px;
-            overflow: hidden;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 1px 3px rgba(14,44,83,0.05);
-          }
-          .ciw-annual-panel-header {
-            background: linear-gradient(135deg, #0E1B37, #1a2f5c);
-            color: #fff;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 12.5px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-            text-align: left;
-          }
-          .ciw-annual-logo {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-          }
-          .ciw-annual-panel-body {
-            padding: 14px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            flex: 1;
-          }
-          .ciw-annual-panel-body > p {
-            font-size: 12.5px;
-            line-height: 1.55;
-            color: var(--navy);
-            margin: 0;
-          }
-          .ciw-annual-panel-body > p strong {
-            font-weight: 700;
-          }
-          .ciw-annual-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 14px;
-          }
-          .ciw-annual-stat {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 7px 12px;
-            background: rgba(14,44,83,0.04);
-            border: 1px solid rgba(14,44,83,0.08);
-            border-radius: 100px;
-          }
-          .ciw-annual-stat-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 11.5px;
-            font-weight: 600;
-            color: var(--navy);
-          }
-          .ciw-annual-stat-label svg {
-            color: var(--navy);
-            opacity: 0.65;
-            flex-shrink: 0;
-          }
-          .ciw-annual-stat-value {
-            font-size: 11px;
-            font-weight: 700;
-            color: #0E1B37;
-            background: rgba(251,189,30,0.22);
-            border: 1px solid rgba(251,189,30,0.45);
-            padding: 3px 10px;
-            border-radius: 100px;
-            letter-spacing: 0.01em;
-            white-space: nowrap;
-          }
-
+          /* Medium screens: row 1 stays 3 columns, but with narrower max-width */
           @media (max-width: 1100px) {
-            .ciw-grid { grid-template-columns: repeat(3, minmax(0, 320px)); gap: 18px; }
+            .ciw-row-3 { grid-template-columns: repeat(3, minmax(260px, 320px)); gap: 18px; }
+            .ciw-row-2 { grid-template-columns: repeat(2, minmax(260px, 320px)); gap: 18px; }
           }
+          /* Tablet: collapse both rows to 2 columns */
           @media (max-width: 920px) {
-            .ciw-grid { grid-template-columns: repeat(2, minmax(240px, 320px)); gap: 16px; }
+            .ciw-row-3, .ciw-row-2 {
+              grid-template-columns: repeat(2, minmax(240px, 320px));
+              gap: 16px;
+            }
           }
+          /* Mobile: single column */
           @media (max-width: 540px) {
-            .ciw-grid { grid-template-columns: minmax(240px, 360px); }
+            .ciw-row-3, .ciw-row-2 {
+              grid-template-columns: minmax(240px, 360px);
+            }
           }
         </style>
 
