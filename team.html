@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact Seren | Care Enquiries Across South Wales | 01792 324800</title>
+  <title>Our Team | 220+ Trained Care Professionals Across South Wales | Seren</title>
   <!-- SEO META TAGS -->
-    <meta name="description" content="Contact Seren Support Services for care enquiries in South Wales. Call 01792 324800 or email info@seren.wales. Offices in Port Talbot and Cardiff. Care across 5 regions." />
-    <meta name="keywords" content="contact Seren care, care enquiry Wales, care provider phone number Wales, Seren contact, care Port Talbot, care Cardiff contact" />
+    <meta name="description" content="Meet the leadership and dedicated care team behind Seren Support Services. Our 220+ permanently employed, fully trained care professionals serve communities across South Wales." />
+    <meta name="keywords" content="Seren care team, Welsh care professionals, care staff Wales, Nick Pambianchi, Jason Kimberley, Shelly Combstock, Polly Duncan" />
     <meta name="author" content="Seren Support Services Ltd" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
-    <link rel="canonical" href="https://seren.wales/contact.html" />
+    <link rel="canonical" href="https://seren.wales/team.html" />
     
     <!-- Geo Tags (Wales-specific) -->
     <meta name="geo.region" content="GB-WLS" />
@@ -19,9 +19,9 @@
     
     <!-- Open Graph (Facebook / LinkedIn / WhatsApp share previews) -->
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Contact Seren | Care Enquiries Across South Wales | 01792 324800" />
-    <meta property="og:description" content="Contact Seren Support Services for care enquiries in South Wales. Call 01792 324800 or email info@seren.wales. Offices in Port Talbot and Cardiff. Care across 5 regions." />
-    <meta property="og:url" content="https://seren.wales/contact.html" />
+    <meta property="og:title" content="Our Team | 220+ Trained Care Professionals Across South Wales | Seren" />
+    <meta property="og:description" content="Meet the leadership and dedicated care team behind Seren Support Services. Our 220+ permanently employed, fully trained care professionals serve communities across South Wales." />
+    <meta property="og:url" content="https://seren.wales/team.html" />
     <meta property="og:site_name" content="Seren Support Services" />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:image" content="https://seren.wales/assets/seren-icon-yellow.png" />
@@ -29,8 +29,8 @@
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Contact Seren | Care Enquiries Across South Wales | 01792 324800" />
-    <meta name="twitter:description" content="Contact Seren Support Services for care enquiries in South Wales. Call 01792 324800 or email info@seren.wales. Offices in Port Talbot and Cardiff. Care across 5 regions." />
+    <meta name="twitter:title" content="Our Team | 220+ Trained Care Professionals Across South Wales | Seren" />
+    <meta name="twitter:description" content="Meet the leadership and dedicated care team behind Seren Support Services. Our 220+ permanently employed, fully trained care professionals serve communities across South Wales." />
     <meta name="twitter:image" content="https://seren.wales/assets/seren-icon-yellow.png" />
     
     <!-- Theme & PWA hints -->
@@ -1140,185 +1140,6 @@
     }
 
   
-    /* ─── CONTACT PAGE MOBILE OPTIMIZATIONS ─── */
-    @media (max-width: 980px) {
-      /* HERO: Reduce visual clutter on mobile */
-      
-      /* Hide the redundant "Get in Touch" button - we ARE on the contact page */
-      .contact-hero-ctas a.btn-gold { display: none !important; }
-      .contact-hero-ctas a.btn-outline-white {
-        width: 100% !important;
-        text-align: center !important;
-        justify-content: center !important;
-      }
-      
-      /* Hide the right-side image card decoration entirely on mobile - 
-         the user wants to contact us, not look at floating badges */
-      .contact-hero-image-block {
-        display: none !important;
-      }
-      
-      /* Hero section: less padding */
-      .contact-hero-section {
-        padding: 100px 18px 56px !important;
-        min-height: auto !important;
-      }
-      
-      /* CONTACT INFO + FORM split: reorder so FORM comes first on mobile */
-      .contact-grid {
-        grid-template-columns: 1fr !important;
-        gap: 32px !important;
-      }
-      
-      /* Form wrapper: tighter padding */
-      #form-wrap {
-        padding: 28px 22px !important;
-        border-radius: 16px !important;
-      }
-      
-      /* Form heading smaller */
-      #form-wrap h3 {
-        font-size: 20px !important;
-        margin-bottom: 22px !important;
-      }
-      
-      /* Name + Email side-by-side -> stacked */
-      .form-row-2col {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
-      }
-      
-      /* Form gap tightens */
-      #contact-form { gap: 14px !important; }
-      
-      /* Inputs: prevent iOS zoom (already in global CSS, reaffirm here) */
-      #form-wrap input,
-      #form-wrap textarea,
-      #form-wrap select {
-        font-size: 16px !important;
-        padding: 14px 14px !important;
-        min-height: 50px;
-      }
-      #form-wrap textarea {
-        min-height: 110px !important;
-      }
-      
-      /* Labels readable */
-      #form-wrap label {
-        font-size: 13px !important;
-        font-weight: 600 !important;
-      }
-      
-      /* Submit button bigger tap target */
-      #form-wrap button[type="submit"] {
-        padding: 16px !important;
-        font-size: 16px !important;
-        min-height: 52px;
-      }
-      
-      /* Contact info column: tighter, more readable */
-      .contact-info-col h2 {
-        font-size: clamp(28px, 7vw, 36px) !important;
-        margin-bottom: 12px !important;
-      }
-      .contact-info-col p {
-        font-size: 15px !important;
-        margin-bottom: 24px !important;
-      }
-      
-      /* Contact method blocks (phone, email): tighter spacing */
-      .contact-info-col [style*="display:flex"][style*="gap:16px"] {
-        gap: 14px !important;
-        margin-bottom: 0 !important;
-      }
-      
-      /* Office cards: full width with tighter padding */
-      .contact-info-col [style*="background:var(--offwhite)"][style*="border-left:3px solid var(--gold)"] {
-        padding: 12px 14px !important;
-      }
-      
-      /* Team image: smaller on mobile, less hierarchy weight */
-      .contact-info-col img {
-        height: 160px !important;
-      }
-      .contact-info-col [style*="border-radius:14px;overflow:hidden"] {
-        margin-top: 8px;
-      }
-      
-      /* Office addresses heading */
-      .contact-info-col [style*="text-transform:uppercase"][style*="letter-spacing:0.1em"] {
-        font-size: 11px !important;
-        margin-bottom: 10px !important;
-      }
-  
-      /* CRITICAL: Center the form card with breathing room */
-      .contact-form-col {
-        display: block !important;
-        width: 100% !important;
-        grid-row: 1 !important;
-      }
-      
-      .contact-info-col {
-        display: block !important;
-        width: 100% !important;
-        grid-row: 2 !important;
-      }
-      
-      .contact-grid {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto auto !important;
-        gap: 32px !important;
-        padding: 0 !important;
-      }
-      
-      #form-wrap {
-        width: 100% !important;
-        max-width: 480px !important;
-        margin: 0 auto !important;
-        padding: 28px 24px !important;
-        border-radius: 18px !important;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.08) !important;
-      }
-      
-      /* Center the contact info column too */
-      .contact-info-col > * {
-        max-width: 480px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
-
-    }
-
-
-    }
-    
-    /* ─── CONTACT PAGE: SMALL MOBILE (≤480px) ─── */
-    @media (max-width: 480px) {
-      .contact-hero-section {
-        padding: 84px 14px 44px !important;
-      }
-      
-      #form-wrap {
-        padding: 22px 18px !important;
-      }
-      
-      #form-wrap h3 {
-        font-size: 18px !important;
-      }
-      
-      .contact-info-col img {
-        height: 140px !important;
-      }
-      
-      /* Info icon dots smaller */
-      .contact-info-col [style*="width:44px;height:44px"] {
-        width: 38px !important;
-        height: 38px !important;
-      }
-    }
-
-  
     /* ════════════════════════════════════════════════════
        MOBILE OPTIMIZATIONS — applied site-wide
        ════════════════════════════════════════════════════ */
@@ -1440,7 +1261,7 @@
   <!-- Vercel Speed Insights -->
   <script>window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };</script>
   <script defer src="/_vercel/speed-insights/script.js"></script>
-<style>.whatsapp-float{position:fixed;bottom:100px;right:24px;width:60px;height:60px;background-color:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:9999;transition:transform 0.2s ease,box-shadow 0.2s ease;text-decoration:none}.whatsapp-float:hover{transform:scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,0.35)}.whatsapp-float svg{width:32px;height:32px;fill:white}@media(max-width:768px){.whatsapp-float{bottom:90px;right:16px;width:54px;height:54px}.whatsapp-float svg{width:28px;height:28px}}</style></head>
+<style>.whatsapp-float{position:fixed;bottom:100px;right:24px;width:60px;height:60px;background-color:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:9999;transition:transform 0.2s ease,box-shadow 0.2s ease;text-decoration:none}.whatsapp-float:hover{transform:scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,0.35)}.whatsapp-float svg{width:32px;height:32px;fill:white}</style></head>
 <body>
 
 <!-- NAV -->
@@ -1515,144 +1336,221 @@
 
 <!-- PAGE CONTENT -->
 <main id="page-content">
-
 <style>
-  /* CONTACT PAGE — MOBILE STYLES (scoped to #page-contact for SPA safety) */
-  @media (max-width: 980px) {
-    /* Make the grid a single column with explicit row order: form FIRST, info SECOND */
-    #page-contact .contact-grid {
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      grid-template-rows: auto auto !important;
-      gap: 32px !important;
-      padding: 0 !important;
+  /* ===== Leadership Cards — floating badge style ===== */
+  #page-team .leader-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--navy);
+    box-shadow: 0 4px 24px rgba(14,44,83,0.12), 0 1.5px 4px rgba(14,44,83,0.07);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.4s ease;
+  }
+  /* Gold accent: subtle diagonal stroke in top-right corner */
+  #page-team .leader-card::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 38px;
+    height: 38px;
+    border-top: 2px solid rgba(251,189,30,0.55);
+    border-right: 2px solid rgba(251,189,30,0.55);
+    border-radius: 0 8px 0 0;
+    z-index: 3;
+    transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  #page-team .leader-card:hover::before {
+    top: 10px;
+    right: 10px;
+    width: 46px;
+    height: 46px;
+    border-color: rgba(251,189,30,0.9);
+  }
+  /* Gold accent: subtle Seren sun icon overlay in top-left, very faint */
+  #page-team .leader-card::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 32px;
+    height: 32px;
+    background-image: url("assets/seren-icon-yellow.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.18;
+    z-index: 3;
+    transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  #page-team .leader-card:hover::after {
+    opacity: 0.5;
+    transform: rotate(20deg) scale(1.1);
+  }
+  #page-team .leader-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 50px rgba(14,44,83,0.22), 0 4px 12px rgba(14,44,83,0.12);
+  }
+  /* Photo fills the whole card */
+  #page-team .leader-photo-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  #page-team .leader-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    display: block;
+    transition: transform 6s cubic-bezier(0.16,1,0.3,1);
+  }
+  #page-team .leader-card:hover .leader-photo {
+    transform: scale(1.05);
+  }
+  /* Subtle gradient at the bottom for badge legibility on light photos */
+  #page-team .leader-photo-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(14,44,83,0.4) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* Small gold accent line at the very bottom edge */
+  #page-team .leader-gold-line {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #fbbd1e 50%, transparent 100%);
+    z-index: 3;
+  }
+  /* Floating badge — sized to content, sits in bottom-left corner */
+  #page-team .leader-info {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    /* sized to content, not full width */
+    display: inline-block;
+    max-width: calc(100% - 36px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-left: 3px solid var(--gold);
+    border-radius: 12px;
+    padding: 11px 16px 10px 14px;
+    z-index: 2;
+    box-shadow: 0 10px 28px rgba(14,44,83,0.22),
+                0 3px 8px rgba(14,44,83,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+    /* Entrance animation chained into continuous float */
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+    animation:
+      leaderBadgeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards,
+      leaderBadgeFloat 4s ease-in-out 0.9s infinite;
+    transition: box-shadow 0.4s ease;
+  }
+  /* Stagger the entrance + float so each badge floats slightly out of sync (nicer organic feel) */
+  #page-team .leader-card:nth-child(1) .leader-info { animation-delay: 0.15s, 0.85s; }
+  #page-team .leader-card:nth-child(2) .leader-info { animation-delay: 0.30s, 1.5s; }
+  #page-team .leader-card:nth-child(3) .leader-info { animation-delay: 0.45s, 0.4s; }
+  #page-team .leader-card:nth-child(4) .leader-info { animation-delay: 0.60s, 1.1s; }
+  
+  @keyframes leaderBadgeIn {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.96);
     }
-    
-    #page-contact .contact-form-col {
-      grid-row: 1 !important;
-      grid-column: 1 !important;
-      width: 100% !important;
-      display: block !important;
-    }
-    
-    #page-contact .contact-info-col {
-      grid-row: 2 !important;
-      grid-column: 1 !important;
-      width: 100% !important;
-      display: block !important;
-    }
-    
-    /* Center the form card with breathing room */
-    #page-contact #form-wrap {
-      width: 100% !important;
-      max-width: 480px !important;
-      margin: 0 auto !important;
-      padding: 28px 24px !important;
-      border-radius: 18px !important;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.08) !important;
-    }
-    
-    /* Center the contact info content */
-    #page-contact .contact-info-col > * {
-      max-width: 480px !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-    }
-    
-    /* Form heading smaller */
-    #page-contact #form-wrap h3 {
-      font-size: 20px !important;
-      margin-bottom: 22px !important;
-    }
-    
-    /* Name + Email side-by-side -> stacked */
-    #page-contact .form-row-2col {
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      gap: 14px !important;
-    }
-    
-    /* Form gap tightens */
-    #page-contact #contact-form { gap: 14px !important; }
-    
-    /* Inputs: prevent iOS zoom (16px+) and bigger tap targets */
-    #page-contact #form-wrap input,
-    #page-contact #form-wrap textarea,
-    #page-contact #form-wrap select {
-      font-size: 16px !important;
-      padding: 14px !important;
-      min-height: 50px;
-      width: 100% !important;
-    }
-    #page-contact #form-wrap textarea {
-      min-height: 110px !important;
-    }
-    
-    /* Submit button bigger tap target */
-    #page-contact #form-wrap button[type="submit"] {
-      padding: 16px !important;
-      font-size: 16px !important;
-      min-height: 52px;
-      width: 100% !important;
-    }
-    
-    /* Hide the redundant "Get in Touch" CTA on the contact page hero */
-    #page-contact .contact-hero-ctas a.btn-gold { display: none !important; }
-    #page-contact .contact-hero-ctas a.btn-outline-white {
-      width: 100% !important;
-      text-align: center !important;
-      justify-content: center !important;
-    }
-    
-    /* Hide the floating image card on hero — too cluttered on mobile */
-    #page-contact .contact-hero-image-block {
-      display: none !important;
-    }
-    
-    /* Hero section padding */
-    #page-contact .contact-hero-section {
-      padding: 100px 18px 56px !important;
-      min-height: auto !important;
-    }
-    
-    /* Contact info column text */
-    #page-contact .contact-info-col h2 {
-      font-size: clamp(28px, 7vw, 36px) !important;
-      margin-bottom: 12px !important;
-    }
-    #page-contact .contact-info-col p {
-      font-size: 15px !important;
-      margin-bottom: 24px !important;
-    }
-    
-    /* Office cards tighter */
-    #page-contact .contact-info-col [style*="border-left:3px solid var(--gold)"] {
-      padding: 12px 14px !important;
-    }
-    
-    /* Team image smaller on mobile */
-    #page-contact .contact-info-col img {
-      height: 160px !important;
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
-  
-  @media (max-width: 480px) {
-    #page-contact .contact-hero-section {
-      padding: 84px 14px 44px !important;
+  /* Continuous gentle floating motion */
+  @keyframes leaderBadgeFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-5px) scale(1); }
+  }
+  /* Hover: pause the floating, lift higher with a deeper shadow */
+  #page-team .leader-card:hover .leader-info {
+    animation-play-state: paused, paused;
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 20px 50px rgba(14,44,83,0.32),
+                0 8px 18px rgba(14,44,83,0.18),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease;
+  }
+  #page-team .leader-role {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dk);
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 4px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  /* Small gold dot before the role label for accent + readability cue */
+  #page-team .leader-role::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(251,189,30,0.5);
+    flex-shrink: 0;
+  }
+  #page-team .leader-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    #page-team .leader-info { 
+      bottom: 12px; left: 12px;
+      padding: 9px 13px 8px;
+      max-width: calc(100% - 24px);
     }
-    #page-contact #form-wrap {
-      padding: 22px 18px !important;
-    }
-    #page-contact #form-wrap h3 {
-      font-size: 18px !important;
-    }
-    #page-contact .contact-info-col img {
-      height: 140px !important;
-    }
+    #page-team .leader-name { font-size: 14px; }
+    #page-team .leader-role { font-size: 9px; margin-bottom: 2px; }
   }
 </style>
 
-<section class="contact-hero-section" style="position:relative;min-height:90vh;background:#0E2C53;overflow:hidden;display:flex;align-items:center;padding:140px 48px 80px;">
+
+<style>
+  /* TEAM PAGE — Disable hover animations on member cards */
+  #page-team .card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important;
+  }
+  #page-team .card {
+    transition: none !important;
+  }
+  /* Belt-and-braces: if any inline transition survives on the imgs, kill it */
+  #page-team .card img {
+    transition: none !important;
+    transform: none !important;
+  }
+</style>
+
+<section style="position:relative;min-height:90vh;background:#0E2C53;overflow:hidden;display:flex;align-items:center;padding:140px 48px 80px;">
   <!-- Atmospheric background -->
   <div style="position:absolute;inset:0;z-index:0;">
     <div style="position:absolute;top:-15%;right:-5%;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(251,189,30,0.12) 0%,transparent 65%);pointer-events:none;animation:pulse 8s ease-in-out infinite;"></div>
@@ -1668,34 +1566,34 @@
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:32px;animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.05s;">
         <a href="index.html" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.3s;letter-spacing:0.02em;font-weight:500;" onmouseover="this.style.color='#fbbd1e'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Home</a>
         <span style="color:rgba(255,255,255,0.25);font-size:13px;">/</span>
-        <span style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;letter-spacing:0.02em;">Contact Us</span>
+        <span style="color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;letter-spacing:0.02em;">Our Team</span>
       </div>
 
       <!-- Eyebrow Pill -->
       <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(251,189,30,0.12);border:1px solid rgba(251,189,30,0.3);border-radius:100px;padding:8px 22px;color:#fbbd1e;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:36px;box-shadow:0 4px 20px rgba(251,189,30,0.15);animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.15s;">
         <span style="width:7px;height:7px;border-radius:50%;background:#fbbd1e;box-shadow:0 0 12px #fbbd1e,0 0 24px rgba(251,189,30,0.4);animation:shimmer 2s ease-in-out infinite;"></span>
-        Get in Touch
+        Our People
       </div>
 
       <!-- H1 -->
       <h1 style="font-family:'Poppins',sans-serif;font-size:clamp(48px,6.5vw,86px);font-weight:800;line-height:1.0;letter-spacing:-0.035em;color:#fff;margin-bottom:32px;animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.25s;">
-        Let's start<br/><span style="color:#fbbd1e;">a conversation.</span>
+        The people<br/><span style="color:#fbbd1e;">behind the care.</span>
       </h1>
 
       <!-- Subtitle -->
       <p style="color:rgba(255,255,255,0.72);font-size:clamp(17px,1.8vw,20px);line-height:1.7;max-width:580px;margin-bottom:40px;font-weight:300;animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.35s;">
-        Whether you're looking for care for yourself or a loved one, exploring a career with us, or just have a question, we'd love to hear from you.
+        A team of dedicated professionals who genuinely care. From our care workers to our directors, everyone at Seren shares the same commitment to making a difference.
       </p>
 
       <!-- CTAs -->
-      <div class="contact-hero-ctas" style="display:flex;gap:14px;flex-wrap:wrap;animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.45s;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;animation:fadeInUp 0.9s cubic-bezier(0.16,1,0.3,1) both 0.45s;">
         <a href="contact.html#form-wrap" class="btn-gold" style="font-size:14.5px;padding:16px 32px;">Get in Touch</a>
         <a href="services.html" class="btn-outline-white" style="font-size:14.5px;padding:15px 30px;">View Our Services</a>
       </div>
     </div>
 
     <!-- RIGHT: Premium Image Card -->
-    <div class="contact-hero-image-block" style="position:relative;animation:fadeInUp 1.1s cubic-bezier(0.16,1,0.3,1) both 0.4s;">
+    <div style="position:relative;animation:fadeInUp 1.1s cubic-bezier(0.16,1,0.3,1) both 0.4s;">
       
       <!-- Decorative corner accents -->
       <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-top:2px solid #fbbd1e;border-right:2px solid #fbbd1e;border-radius:0 20px 0 0;z-index:3;opacity:0.7;"></div>
@@ -1703,7 +1601,7 @@
       
       <!-- Main Image -->
       <div style="position:relative;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.4),0 12px 32px rgba(0,0,0,0.2);aspect-ratio:4/5;">
-        <img loading="lazy" decoding="async" src="assets/team-4.jpg" alt="Seren care team in branded scrubs at office meeting" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;transition:transform 8s cubic-bezier(0.16,1,0.3,1);" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"/>
+        <img loading="lazy" decoding="async" src="assets/team-5.jpg" alt="Seren team across South Wales" style="width:100%;height:100%;object-fit:cover;object-position:center 35%;transition:transform 8s cubic-bezier(0.16,1,0.3,1);" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"/>
         
         <!-- Gradient overlay -->
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(14,44,83,0.6) 100%);pointer-events:none;"></div>
@@ -1718,8 +1616,8 @@
           <svg width="26" height="26" viewBox="0 0 20 20" fill="none"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="#fff"/></svg>
         </div>
         <div>
-          <div style="color:#0E2C53;font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;line-height:1.1;margin-bottom:4px;">Speak to Us</div>
-          <div style="color:#6B6B6B;font-size:12px;font-weight:500;letter-spacing:0.02em;">We're here to help</div>
+          <div style="color:#0E2C53;font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.01em;line-height:1.1;margin-bottom:4px;">220+ Team Members</div>
+          <div style="color:#6B6B6B;font-size:12px;font-weight:500;letter-spacing:0.02em;">Across South Wales</div>
         </div>
       </div>
 
@@ -1740,325 +1638,207 @@
 </style>
 
 <section class="section bg-white">
-  <div class="section-inner contact-grid" style="display:grid;grid-template-columns:1fr 1.15fr;gap:80px;align-items:start;">
-    <div class="reveal-left contact-info-col">
-      <span class="eyebrow">Get in touch</span>
-      <h2 class="section-heading" style="font-size:clamp(26px,3vw,40px);">No pressure,<br/><span>no jargon.</span></h2>
-      <p style="font-size:16px;line-height:1.8;margin-bottom:36px;">Just a genuine conversation about how we can help. Our friendly team is always happy to talk through your options.</p>
-
-      <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:36px;">
-        
-          <div style="display:flex;gap:16px;align-items:flex-start;">
-            <div style="width:44px;height:44px;border-radius:12px;background:var(--offwhite);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);"></div>
-            </div>
-            <div><div style="color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Phone</div><div style="color:var(--navy);font-size:15px;font-weight:700;margin-bottom:2px;">01792 324800</div><div style="color:var(--muted);font-size:12px;">Mon–Fri, 8am–6pm</div></div>
+  <div class="section-inner">
+    <div style="text-align:center;max-width:640px;margin:0 auto 56px;">
+      <span class="eyebrow reveal">Leadership Team</span>
+      <h2 class="section-heading reveal reveal-d1">The people<br/><span>leading Seren</span></h2>
+      <p class="reveal reveal-d2">As a family-owned business, our leadership team remains closely involved in the day-to-day running of the organisation.</p>
+    </div>
+    <div class="grid-4" style="margin-bottom:72px;">
+      
+        <div class="leader-card reveal reveal-d1">
+          <div class="leader-photo-wrap">
+            <img loading="lazy" decoding="async" src="assets/nick.jpg" alt="Nick Pambianchi, CEO of Seren Support Services" class="leader-photo"/>
+            <div class="leader-gold-line"></div>
           </div>
-        
-          <div style="display:flex;gap:16px;align-items:flex-start;">
-            <div style="width:44px;height:44px;border-radius:12px;background:var(--offwhite);border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);"></div>
-            </div>
-            <div><div style="color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;">Email</div><div style="color:var(--navy);font-size:15px;font-weight:700;margin-bottom:2px;">info@seren.wales</div><div style="color:var(--muted);font-size:12px;">We respond within 24 hours</div></div>
+          <div class="leader-info">
+            <div class="leader-role">CEO</div>
+            <h3 class="leader-name">Nick Pambianchi</h3>
           </div>
-        
-      </div>
-
-      <div style="margin-bottom:28px;">
-        <div style="color:var(--navy);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Our Offices</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          
-            <div style="background:var(--offwhite);border-radius:12px;padding:14px 18px;border-left:3px solid var(--gold);">
-              <div style="color:var(--navy);font-size:12.5px;font-weight:700;margin-bottom:3px;">Head Office</div>
-              <div style="color:var(--muted);font-size:12px;line-height:1.5;">Llewellyn House, Harbourside Business Park, Port Talbot, SA13 1SB</div>
-            </div>
-          
-            <div style="background:var(--offwhite);border-radius:12px;padding:14px 18px;border-left:3px solid var(--gold);">
-              <div style="color:var(--navy);font-size:12.5px;font-weight:700;margin-bottom:3px;">Cardiff Office</div>
-              <div style="color:var(--muted);font-size:12px;line-height:1.5;">Space2B @ The Maltings, E Tyndall Street, Cardiff, CF24 5EA</div>
-            </div>
-          
-            <div style="background:var(--offwhite);border-radius:12px;padding:14px 18px;border-left:3px solid var(--gold);">
-              <div style="color:var(--navy);font-size:12.5px;font-weight:700;margin-bottom:3px;">Caerphilly Office</div>
-              <div style="color:var(--muted);font-size:12px;line-height:1.5;">Orchard House, Caerphilly Business Park, CF83 3GS</div>
-            </div>
-          
         </div>
-      </div>
-
-      <div style="border-radius:14px;overflow:hidden;">
-        <img loading="lazy" decoding="async" src="assets/team-meeting.jpg" alt="Seren management team meeting at South Wales office" style="width:100%;height:200px;object-fit:cover;object-position:center 25%;display:block;"/>
-      </div>
+              <div class="leader-card reveal reveal-d2">
+          <div class="leader-photo-wrap">
+            <img loading="lazy" decoding="async" src="assets/jason.jpg" alt="Jason Kimberley, Director at Seren Support Services" class="leader-photo"/>
+            <div class="leader-gold-line"></div>
+          </div>
+          <div class="leader-info">
+            <div class="leader-role">Director</div>
+            <h3 class="leader-name">Jason Kimberley</h3>
+          </div>
+        </div>
+              <div class="leader-card reveal reveal-d3">
+          <div class="leader-photo-wrap">
+            <img loading="lazy" decoding="async" src="assets/shelly.jpg" alt="Shelly Combstock, Director of Care at Seren Support Services" class="leader-photo"/>
+            <div class="leader-gold-line"></div>
+          </div>
+          <div class="leader-info">
+            <div class="leader-role">Director of Care</div>
+            <h3 class="leader-name">Shelly Combstock</h3>
+          </div>
+        </div>
+              <div class="leader-card reveal reveal-d4">
+          <div class="leader-photo-wrap">
+            <img loading="lazy" decoding="async" src="assets/polly.jpg" alt="Polly Duncan, Operations Director at Seren Support Services" class="leader-photo"/>
+            <div class="leader-gold-line"></div>
+          </div>
+          <div class="leader-info">
+            <div class="leader-role">Operations Director</div>
+            <h3 class="leader-name">Polly Duncan</h3>
+          </div>
+        </div>
+      
     </div>
 
-    <div class="reveal-right contact-form-col">
-      <div style="background:#fff;border-radius:20px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 40px rgba(0,0,0,0.07);padding:48px;scroll-margin-top:100px;" id="form-wrap">
-        <h3 style="color:var(--navy);font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;margin-bottom:28px;letter-spacing:-0.02em;">Send us a message</h3>
-        <form id="contact-form" action="https://formspree.io/f/mykonjwz" method="POST" style="display:flex;flex-direction:column;gap:18px;" novalidate>
-          <div class="form-row-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-name">Full Name</label>
-              <input id="f-name" name="name" type="text" placeholder="Your name" style="background:var(--offwhite);border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:13px 16px;color:var(--ink);font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'"/>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-email">Email Address</label>
-              <input id="f-email" name="email" type="email" placeholder="your@email.com" style="background:var(--offwhite);border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:13px 16px;color:var(--ink);font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'"/>
-            </div>
+    
+    
+
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-bottom:40px;">
+      
+        <div class="reveal reveal-d1" style="background:var(--offwhite);border-radius:var(--radius-lg);padding:32px 28px;">
+          <h3 style="color:var(--navy);font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--gold);">People Team</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">M</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Margo Wigley</div><div style="color:var(--muted);font-size:12px;">Training & Development Manager</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">C</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Carlo Pambianchi</div><div style="color:var(--muted);font-size:12px;">Social Care Trainer</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">G</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Georgia Thomas</div><div style="color:var(--muted);font-size:12px;">Recruitment Officer</div></div>
+              </div>
+            
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-phone">Phone Number</label>
-            <input id="f-phone" name="phone" type="tel" placeholder="Your phone number" style="background:var(--offwhite);border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:13px 16px;color:var(--ink);font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'"/>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-reason">Why are you getting in touch?</label>
-            <select id="f-reason" name="reason" style="background:var(--offwhite);border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:13px 16px;color:var(--ink);font-size:14px;font-family:inherit;width:100%;outline:none;transition:border-color 0.2s;appearance:none;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'">
-              <option value="">Select a reason…</option>
-              <option value="care">I'm looking for care for myself</option>
-              <option value="family">I'm looking for care for a family member</option>
-              <option value="career">I'm interested in a career at Seren</option>
-              <option value="professional">I'm a professional / referral</option>
-              <option value="other">Something else</option>
-            </select>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <label style="color:var(--ink);font-size:13px;font-weight:600;" for="f-message">Message</label>
-            <textarea id="f-message" name="message" rows="4" placeholder="How can we help?" style="background:var(--offwhite);border:1.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:13px 16px;color:var(--ink);font-size:14px;font-family:inherit;width:100%;outline:none;resize:vertical;min-height:120px;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'"></textarea>
-          </div>
-          <button type="submit" class="btn-gold" style="width:100%;padding:16px;font-size:15px;justify-content:center;">Send Message</button>
-          <div id="form-error" style="display:none;color:#c0392b;font-size:13px;font-weight:500;"></div>
-        </form>
-        <div id="form-success" style="display:none;text-align:center;padding:48px 0;">
-          <svg viewBox="0 0 56 56" fill="none" width="56" height="56" style="margin-bottom:20px;"><circle cx="28" cy="28" r="26" fill="rgba(251,189,30,0.12)" stroke="#fbbd1e" stroke-width="2"/><path d="M16 28l8 8 16-16" stroke="#fbbd1e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h3 style="color:var(--navy);font-size:22px;font-weight:700;margin-bottom:10px;">Message Sent!</h3>
-          <p style="color:var(--muted);font-size:15px;line-height:1.65;">Thank you for reaching out. A member of our team will be in touch within 24 hours.</p>
         </div>
-      </div>
+      
+        <div class="reveal reveal-d2" style="background:var(--offwhite);border-radius:var(--radius-lg);padding:32px 28px;">
+          <h3 style="color:var(--navy);font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--gold);">Operations Team</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">L</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Lynne Evans</div><div style="color:var(--muted);font-size:12px;">Business Support</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">T</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Tyler Garnham</div><div style="color:var(--muted);font-size:12px;">Finance Team Leader</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">J</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Jake Elliott</div><div style="color:var(--muted);font-size:12px;">Finance Administrator</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">R</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Rebecca Charles</div><div style="color:var(--muted);font-size:12px;">Business Development Lead</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">P</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Pankaj Panwar</div><div style="color:var(--muted);font-size:12px;">Team Leader (Shift Allocation)</div></div>
+              </div>
+            
+          </div>
+        </div>
+      
+        <div class="reveal reveal-d3" style="background:var(--offwhite);border-radius:var(--radius-lg);padding:32px 28px;">
+          <h3 style="color:var(--navy);font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--gold);">Care Management</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">T</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Tracey Williams</div><div style="color:var(--muted);font-size:12px;">Care Manager · Neath Port Talbot</div></div>
+              </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">D</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Daniel Ring</div><div style="color:var(--muted);font-size:12px;">Care Manager · Bridgend</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">E</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Ellie Jones</div><div style="color:var(--muted);font-size:12px;">Care Manager · Cardiff & Gwent</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">G</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Gareth Barry</div><div style="color:var(--muted);font-size:12px;">Compliance Officer · Neath Port Talbot</div></div>
+              </div>
+                          <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">B</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Bev Gunnion</div><div style="color:var(--muted);font-size:12px;">Compliance Officer · Bridgend</div></div>
+              </div>
+            
+          </div>
+        </div>
+      
+        <div class="reveal reveal-d4" style="background:var(--offwhite);border-radius:var(--radius-lg);padding:32px 28px;">
+          <h3 style="color:var(--navy);font-size:16px;font-weight:700;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--gold);">Service Team Leaders</h3>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">S</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Srinivasa Dadi</div><div style="color:var(--muted);font-size:12px;">Team Leader · Cardiff</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">S</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Stephen Ogieze</div><div style="color:var(--muted);font-size:12px;">Team Leader · Caerphilly &amp; Blaenau Gwent</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">D</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Dominique Gunningham</div><div style="color:var(--muted);font-size:12px;">Team Leader · Bridgend</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">M</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Matthew Edosa</div><div style="color:var(--muted);font-size:12px;">Team Leader · Neath</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">A</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Allison Fisher</div><div style="color:var(--muted);font-size:12px;">Team Leader · Supported Living</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">F</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Favour Emono</div><div style="color:var(--muted);font-size:12px;">Team Leader · Cardiff</div></div>
+              </div>
+            
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">C</div>
+                <div><div style="color:var(--navy);font-size:14px;font-weight:600;">Cynthia Egbidi</div><div style="color:var(--muted);font-size:12px;">Team Leader · Neath</div></div>
+              </div>
+            
+          </div>
+        </div>
+      
+    </div>
+
+    <div style="display:inline-flex;align-items:center;gap:14px;background:var(--offwhite);border-radius:14px;padding:16px 24px;border:1px solid rgba(0,0,0,0.06);">
+      <span style="font-size:28px;">🐾</span>
+      <div><div style="color:var(--navy);font-weight:700;font-size:15px;">Dotty</div><div style="color:var(--gold);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">Chief Morale Officer</div></div>
     </div>
   </div>
 </section>
 
-<script>
-document.getElementById('contact-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const form = e.target;
-  const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const reason = document.getElementById('f-reason').value;
-  const message = document.getElementById('f-message').value.trim();
-  const errEl = document.getElementById('form-error');
-  const submitBtn = form.querySelector('button[type="submit"]');
-
-  // Client-side validation
-  if (!name) { errEl.style.display='block'; errEl.textContent='Please enter your name.'; return; }
-  if (!email || !/\S+@\S+\.\S+/.test(email)) { errEl.style.display='block'; errEl.textContent='Please enter a valid email.'; return; }
-  if (!reason) { errEl.style.display='block'; errEl.textContent='Please select a reason.'; return; }
-  if (!message) { errEl.style.display='block'; errEl.textContent='Please add a message.'; return; }
-  errEl.style.display='none';
-
-  // Show loading state
-  const originalBtnText = submitBtn.textContent;
-  submitBtn.textContent = 'Sending...';
-  submitBtn.disabled = true;
-
-  try {
-    // Submit to Formspree
-    const formData = new FormData(form);
-    const response = await fetch(form.action, {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (response.ok) {
-      // Success - show confirmation
-      form.style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
-    } else {
-      // Formspree returned an error
-      const data = await response.json().catch(() => ({}));
-      errEl.style.display = 'block';
-      errEl.textContent = (data.errors && data.errors[0]?.message) || 'Something went wrong. Please email info@seren.wales directly.';
-      submitBtn.textContent = originalBtnText;
-      submitBtn.disabled = false;
-    }
-  } catch (err) {
-    // Network error - offer mailto fallback
-    errEl.style.display = 'block';
-    errEl.innerHTML = 'Could not send. Please email <a href="mailto:info@seren.wales" style="color:var(--navy);text-decoration:underline;">info@seren.wales</a> directly.';
-    submitBtn.textContent = originalBtnText;
-    submitBtn.disabled = false;
-  }
-});
-</script>
-<script>setTimeout(()=>{document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>{if(!el.classList.contains('visible')){const o=new IntersectionObserver((en)=>{en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');o.unobserve(e.target);}});},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});o.observe(el);}});},100);</script>
-    <!-- CIW Regulatory Inspection Widgets -->
-    <section class="section" style="background:#fff;padding-top:64px;padding-bottom:64px;">
-      <div class="section-inner">
-
-        <div class="reveal" style="text-align:center;margin-bottom:48px;">
-          <div style="display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;padding:6px 20px;background:rgba(14,44,83,0.06);border-radius:100px;margin-bottom:18px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Regulated &amp; Inspected
-          </div>
-          <h2 style="font-family:'Poppins',sans-serif;font-size:clamp(26px,3vw,34px);font-weight:800;color:var(--navy);letter-spacing:-0.02em;margin-bottom:14px;">Care Inspectorate Wales</h2>
-          <p style="color:var(--muted);font-size:16px;line-height:1.7;max-width:600px;margin:0 auto;">Seren Support Services is regulated and inspected by Care Inspectorate Wales across every region we serve. Click any badge to view our latest inspection report.</p>
-        </div>
-
-        <!-- ROW 1: 3 cards (Cwm Taf, Cardiff, Gwent) -->
-        <div class="ciw-row ciw-row-3">
-          <div class="ciw-card">
-            <div class="ciw-region">Cwm Taf<br/><span>Bridgend</span></div>
-            <div class="ciw-widget-wrap">
-              <script type="text/javascript" src="https://digital.careinspectorate.wales/widget/SIN-00011211-LTKT"></script>
-            </div>
-            <a href="https://digital.careinspectorate.wales/widget/SIN-00011211-LTKT" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
-          <div class="ciw-card">
-            <div class="ciw-region">Cardiff<br/><span>&amp; The Vale</span></div>
-            <div class="ciw-widget-wrap">
-              <script type="text/javascript" src="https://digital.careinspectorate.wales/widget/SIN-00012209-FCKM"></script>
-            </div>
-            <a href="https://digital.careinspectorate.wales/widget/SIN-00012209-FCKM" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
-          <div class="ciw-card">
-            <div class="ciw-region">Gwent<br/><span>&nbsp;</span></div>
-            <div class="ciw-widget-wrap">
-              <script type="text/javascript" src="https://digital.careinspectorate.wales/widget/SIN-00010353-QMRK"></script>
-            </div>
-            <a href="https://digital.careinspectorate.wales/widget/SIN-00010353-QMRK" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
-        </div>
-
-        <!-- ROW 2: 2 cards (Powys, Western Bay) -->
-        <div class="ciw-row ciw-row-2">
-          <div class="ciw-card">
-            <div class="ciw-region">Powys<br/><span>&nbsp;</span></div>
-            <div class="ciw-widget-wrap">
-              <script type="text/javascript" src="https://digital.careinspectorate.wales/widget/SIN-00010352-KKBP"></script>
-            </div>
-            <a href="https://digital.careinspectorate.wales/widget/SIN-00010352-KKBP" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
-          <div class="ciw-card">
-            <div class="ciw-region">Western Bay<br/><span>&nbsp;</span></div>
-            <div class="ciw-widget-wrap">
-              <script type="text/javascript" src="https://digital.careinspectorate.wales/widget/SIN-00010351-VRPV"></script>
-            </div>
-            <a href="https://digital.careinspectorate.wales/widget/SIN-00010351-VRPV" target="_blank" rel="noopener noreferrer" class="ciw-link">View Report <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-          </div>
-        </div>
-
-        <style>
-          /* Row 1: always 3 columns. Row 2: 2 columns, narrower so it visually balances */
-          .ciw-row-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 340px);
-            gap: 24px;
-            justify-content: center;
-            width: 100%;
-            margin: 0 auto;
-          }
-          .ciw-row-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 340px);
-            gap: 24px;
-            justify-content: center;
-            width: 100%;
-            margin: 24px auto 0;
-          }
-
-          .ciw-card {
-            background: #fff;
-            border: 1.5px solid rgba(14,44,83,0.10);
-            border-radius: 18px;
-            padding: 24px 22px 22px;
-            overflow: hidden;
-            box-sizing: border-box;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(14,44,83,0.06);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-          }
-          .ciw-card:hover {
-            box-shadow: 0 12px 36px rgba(14,44,83,0.13);
-            transform: translateY(-3px);
-          }
-          .ciw-region {
-            font-family: 'Poppins', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--navy);
-            line-height: 1.3;
-            padding-bottom: 14px;
-            border-bottom: 2px solid #fbbd1e;
-            width: 100%;
-          }
-          .ciw-region span {
-            font-size: 12.5px;
-            font-weight: 500;
-            color: var(--muted);
-          }
-          .ciw-widget-wrap {
-            width: 100%;
-            min-height: 80px;
-            display: flex;
-            align-items: stretch;
-            justify-content: center;
-          }
-          .ciw-widget-wrap > * {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          .ciw-widget-wrap iframe {
-            width: 100% !important;
-            border: none;
-          }
-          .ciw-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--navy);
-            text-decoration: none;
-            padding: 8px 18px;
-            border-radius: 100px;
-            background: rgba(14,44,83,0.05);
-            border: 1px solid rgba(14,44,83,0.12);
-            transition: all 0.2s;
-            margin-top: auto;
-          }
-          .ciw-link:hover {
-            background: var(--navy);
-            color: #fff;
-            border-color: var(--navy);
-          }
-          /* Medium screens: row 1 stays 3 columns, but with narrower max-width */
-          @media (max-width: 1100px) {
-            .ciw-row-3 { grid-template-columns: repeat(3, minmax(260px, 320px)); gap: 18px; }
-            .ciw-row-2 { grid-template-columns: repeat(2, minmax(260px, 320px)); gap: 18px; }
-          }
-          /* Tablet: collapse both rows to 2 columns */
-          @media (max-width: 920px) {
-            .ciw-row-3, .ciw-row-2 {
-              grid-template-columns: repeat(2, minmax(240px, 320px));
-              gap: 16px;
-            }
-          }
-          /* Mobile: single column */
-          @media (max-width: 540px) {
-            .ciw-row-3, .ciw-row-2 {
-              grid-template-columns: minmax(240px, 360px);
-            }
-          }
-        </style>
-
-      </div>
-    </section>
-</main>
+<section style="background:var(--gold);padding:80px 48px;">
+  <div class="section-inner" style="display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;">
+    <div class="reveal-left">
+      <h2 style="font-family:'Poppins',sans-serif;font-size:clamp(24px,3vw,38px);font-weight:800;color:var(--navy);margin-bottom:8px;letter-spacing:-0.025em;">Want to join this team?</h2>
+      <p style="color:rgba(14,44,83,0.7);font-size:16px;">We're always looking for compassionate, dedicated people.</p>
+    </div>
+    <div class="reveal-right"><a href="join-us.html" class="btn-navy" style="white-space:nowrap;">View Opportunities →</a></div>
+  </div>
+</section>
+<script>setTimeout(()=>{document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>{if(!el.classList.contains('visible')){const o=new IntersectionObserver((en)=>{en.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');o.unobserve(e.target);}});},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});o.observe(el);}});},100);</script></main>
 
 <!-- FOOTER -->
 <footer class="site-footer">
@@ -3096,6 +2876,5 @@ document.getElementById('contact-form').addEventListener('submit', async functio
 })();
 </script>
 
-<a href="https://wa.me/447955291314?text=Hi%20Seren%2C%20I%27d%20like%20to%20find%20out%20more%20about%20your%20services." class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with Seren on WhatsApp"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a><script src="assets/staff-chat.js" defer></script>
-</body>
+<a href="https://wa.me/447955291314?text=Hi%20Seren%2C%20I%27d%20like%20to%20find%20out%20more%20about%20your%20services." class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with Seren on WhatsApp"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a></body>
 </html>

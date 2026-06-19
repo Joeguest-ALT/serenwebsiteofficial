@@ -1,0 +1,11 @@
+# robots.txt for Seren Support Services
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /*.json$
+
+# Crawl-delay to be friendly with smaller search engines
+Crawl-delay: 1
+
+# Sitemap location for all crawlers
+Sitemap: https://seren-website4.vercel.app/sitemap.xml
