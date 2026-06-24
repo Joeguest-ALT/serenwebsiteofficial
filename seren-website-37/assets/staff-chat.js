@@ -284,7 +284,8 @@
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
       .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
-      .replace(/\n/g, "<br>");
+      .replace(/\n/g, "<br>")
+      .replace(/❤️|❤|💛|🧡|💚|💙|💜|🖤|🤍|🤎|🩷|🩵|🩶|💖|💗|💕|💓|💞|💝|💘|♥️|♥/g, '<svg viewBox="0 0 24 24" width="1em" height="1em" style="display:inline-block;vertical-align:-0.15em" fill="#FBBD1E" aria-label="heart"><path d="M12 21s-7-4.35-7-10a4.5 4.5 0 0 1 8-2.83A4.5 4.5 0 0 1 19 11c0 5.65-7 10-7 10z"/></svg>');
     el.innerHTML = html;
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
