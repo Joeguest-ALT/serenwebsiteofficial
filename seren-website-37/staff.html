@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Seren Staff Assistant</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Seren Support Services staff assistant. Pay, policies, HR and wellbeing answers." />
+
+<meta name="theme-color" content="#0E2C53" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Seren Staff" />
+<meta name="format-detection" content="telephone=yes" />
+
+<link rel="manifest" href="/staff-app.webmanifest" />
+<link rel="icon" type="image/png" href="/assets/seren-app-192.png" />
+<link rel="apple-touch-icon" href="/assets/seren-app-apple-180.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --navy:#0E2C53;
+    --navy-deep:#0A2140;
+    --navy-soft:#1B4176;
+    --gold:#FBBD1E;
+    --surface:#FFFFFF;
+    --bot-bg:#F1F4F8;
+    --ink:#0E2C53;
+    --muted:#5B6B80;
+    --line:#E2E7EE;
+    --error:#B3261E;
+    --tap:48px;
+  }
+
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--navy);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior:none;
+  }
+
+  .app{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    height:100dvh;
+    max-width:720px;
+    margin:0 auto;
+    background:var(--surface);
+  }
+
+  /* ── Header ─────────────────────────────────────────── */
+  .hdr{
+    flex:0 0 auto;
+    background:var(--navy);
+    padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .hdr-mark{width:30px;height:30px;flex:0 0 auto;}
+  .hdr-txt{flex:1 1 auto;min-width:0;}
+  .hdr-title{
+    color:#fff;font-size:16px;font-weight:600;line-height:1.2;
+    margin:0;letter-spacing:-0.01em;
+  }
+  .hdr-sub{
+    color:rgba(255,255,255,0.62);font-size:12px;font-weight:400;
+    margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .hdr-btn{
+    flex:0 0 auto;min-width:var(--tap);min-height:var(--tap);
+    display:flex;align-items:center;justify-content:center;
+    background:none;border:none;cursor:pointer;
+    color:rgba(255,255,255,0.75);border-radius:10px;
+    font-family:inherit;
+  }
+  .hdr-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+  .hdr-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  /* ── Message area ───────────────────────────────────── */
+  .log{
+    flex:1 1 auto;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:20px 16px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .msg{
+    padding:12px 16px;
+    border-radius:18px;
+    margin:5px 0;
+    max-width:88%;
+    font-size:16px;
+    line-height:1.5;
+    word-wrap:break-word;
+    animation:rise .22s ease-out;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .msg-bot{background:var(--bot-bg);color:var(--ink);border-bottom-left-radius:5px;align-self:flex-start;}
+  .msg-me{background:var(--navy);color:#fff;border-bottom-right-radius:5px;align-self:flex-end;}
+  .msg-bot strong{font-weight:600;}
+  .msg a{color:var(--navy-soft);font-weight:500;}
+  .msg-me a{color:#fff;}
+  .msg a.tel{
+    display:inline-block;
+    background:var(--navy);color:#fff;
+    padding:3px 12px;border-radius:999px;
+    font-weight:600;text-decoration:none;
+    white-space:nowrap;margin:1px 0;
+  }
+
+  /* Signature: the starburst thinks, instead of three grey dots */
+  .thinking{align-self:flex-start;padding:14px 16px;margin:5px 0;}
+  .thinking svg{width:26px;height:26px;animation:spin 2.4s linear infinite;transform-origin:50% 50%;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+  /* ── Quick actions ──────────────────────────────────── */
+  .chips{padding:6px 16px 4px;display:flex;flex-direction:column;gap:8px;}
+  .chips-lbl{
+    font-size:12px;font-weight:500;color:var(--muted);
+    text-transform:uppercase;letter-spacing:0.07em;margin:8px 0 2px;
+  }
+  .chip{
+    width:100%;min-height:var(--tap);
+    text-align:left;
+    padding:13px 16px;
+    background:#fff;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    font-family:inherit;font-size:16px;font-weight:500;
+    color:var(--ink);cursor:pointer;
+    transition:border-color .15s,background .15s;
+  }
+  .chip:hover{border-color:var(--navy);background:#FAFBFD;}
+  .chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  /* ── Composer ───────────────────────────────────────── */
+  .composer{
+    flex:0 0 auto;
+    border-top:1px solid var(--line);
+    background:#fff;
+    padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);
+    display:flex;align-items:flex-end;gap:8px;
+  }
+  .composer textarea{
+    flex:1 1 auto;
+    font-family:inherit;font-size:16px;line-height:1.4;
+    padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:22px;
+    resize:none;max-height:120px;min-height:var(--tap);
+    outline:none;color:var(--ink);background:#fff;
+  }
+  .composer textarea:focus{border-color:var(--navy);}
+  .send{
+    flex:0 0 auto;width:var(--tap);height:var(--tap);
+    border:none;border-radius:50%;
+    background:var(--navy);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .send:disabled{opacity:.35;cursor:not-allowed;}
+  .send:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  /* ── Sign in ────────────────────────────────────────── */
+  .signin{
+    flex:1 1 auto;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:24px 24px calc(env(safe-area-inset-bottom) + 24px);
+    max-width:400px;width:100%;margin:0 auto;
+  }
+  .signin-mark{width:52px;height:52px;margin:0 auto 20px;display:block;}
+  .signin h1{font-size:22px;font-weight:600;margin:0 0 6px;text-align:center;letter-spacing:-0.02em;}
+  .signin .lede{font-size:15px;color:var(--muted);margin:0 0 28px;text-align:center;line-height:1.5;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px;}
+  .field input{
+    width:100%;min-height:var(--tap);
+    font-family:inherit;font-size:17px;
+    padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:12px;
+    outline:none;color:var(--ink);background:#fff;
+  }
+  .field input:focus{border-color:var(--navy);}
+  .field .hint{font-size:13px;color:var(--muted);margin:6px 0 0;}
+  .btn-primary{
+    width:100%;min-height:52px;
+    background:var(--navy);color:#fff;
+    border:none;border-radius:12px;
+    font-family:inherit;font-size:16px;font-weight:600;
+    cursor:pointer;margin-top:6px;
+  }
+  .btn-primary:hover{background:#14386a;}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-primary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .err{color:var(--error);font-size:14px;font-weight:500;margin-top:12px;min-height:20px;text-align:center;}
+  .signin-foot{text-align:center;font-size:13px;color:var(--muted);margin-top:24px;line-height:1.5;}
+  .signin-foot a{color:var(--navy-soft);}
+
+  /* ── Install hint ───────────────────────────────────── */
+  .install{
+    display:none;
+    background:var(--navy-deep);color:#fff;
+    padding:12px 16px;
+    font-size:14px;line-height:1.45;
+    align-items:center;gap:12px;
+  }
+  .install.show{display:flex;}
+  .install p{margin:0;flex:1 1 auto;}
+  .install b{color:var(--gold);font-weight:600;}
+  .install button{
+    flex:0 0 auto;min-width:44px;min-height:44px;
+    background:none;border:none;color:rgba(255,255,255,.6);
+    font-size:22px;cursor:pointer;font-family:inherit;line-height:1;
+  }
+
+  .banner{
+    background:#FDF3D6;color:#6B4E00;
+    padding:10px 16px;font-size:14px;text-align:center;
+    display:none;
+  }
+  .banner.show{display:block;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="hdr">
+    <svg class="hdr-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#star"/></svg>
+    <div class="hdr-txt">
+      <p class="hdr-title">Seren Assistant</p>
+      <p class="hdr-sub" id="hdrSub">Pay, policies, HR and wellbeing</p>
+    </div>
+    <button class="hdr-btn" id="menuBtn" hidden aria-label="Sign out">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="banner" id="offlineBanner">No connection — you'll need signal to ask a question.</div>
+
+  <!-- Sign in -->
+  <section class="signin" id="signin">
+    <svg class="signin-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#star"/></svg>
+    <h1>Staff sign in</h1>
+    <p class="lede">Sign in once and this stays open on your phone — you won't need to do it again.</p>
+
+    <div class="field">
+      <label for="surname">Surname</label>
+      <input type="text" id="surname" autocomplete="family-name" autocapitalize="words"
+             spellcheck="false" enterkeyhint="next" />
+    </div>
+
+    <div class="field">
+      <label for="pin">Payroll number</label>
+      <input type="password" id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+             autocomplete="off" enterkeyhint="go" />
+      <p class="hint">The number on your payslip.</p>
+    </div>
+
+    <button class="btn-primary" id="signinBtn">Sign in</button>
+    <p class="err" id="signinErr" role="alert"></p>
+
+    <p class="signin-foot">
+      Forgotten your number? Ask your team leader, or email
+      <a href="mailto:info@seren.wales">info@seren.wales</a>.
+    </p>
+  </section>
+
+  <!-- Chat -->
+  <main class="log" id="log" role="log" aria-live="polite" aria-label="Conversation" hidden></main>
+
+  <div class="install" id="install">
+    <p id="installTxt"></p>
+    <button id="installClose" aria-label="Dismiss">&times;</button>
+  </div>
+
+  <div class="composer" id="composer" hidden>
+    <label class="sr" for="q">Ask a question</label>
+    <textarea id="q" rows="1" placeholder="Ask a question…" enterkeyhint="send"></textarea>
+    <button class="send" id="sendBtn" aria-label="Send">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.39 1l1.49 5.16a1 1 0 0 0 .82.72l9.68 1.4a.13.13 0 0 1 0 .25l-9.68 1.4a1 1 0 0 0-.82.72L2.01 19.4a1 1 0 0 0 1.39 1z"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+<!-- Seren starburst, drawn once, reused -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="star" viewBox="0 0 24 24">
+    <g fill="#FBBD1E" id="rays"></g>
+  </symbol>
+</svg>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Config — matches assets/staff-chat.js ─────────────── */
+  var SUPABASE_URL = "https://wwwfvgqgcwyudsaoszww.supabase.co";
+  var ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3d2Z2Z3FnY3d5dWRzYW9zend3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzgwMjcsImV4cCI6MjA5NTMxNDAyN30.NZ7HAOUbw8Q2l5wUAAPLOV2XZ70tngVE-Aw6KeR9i80";
+  var FN = SUPABASE_URL + "/functions/v1/staff-chat";
+
+  /* Same keys as the website widget, so a session started there carries over */
+  var K_TOKEN = "seren_staff_token";
+  var K_EXPIRY = "seren_staff_token_expires";
+  var K_NAME = "seren_staff_name";
+  var K_INSTALL = "seren_staff_install_dismissed";
+  var K_VISITS = "seren_staff_visits";
+
+  var QUICK = [
+    "When do I get paid?",
+    "How do I book annual leave?",
+    "How do I report sickness?",
+    "What can I claim for mileage and expenses?",
+    "I'm struggling — what support is there?"
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ── Draw the starburst (36 tapered rays) ──────────────── */
+  (function drawStar(){
+    var g = document.getElementById("rays");
+    if (!g) return;
+    var N = 36, cx = 12, cy = 12, r0 = 5.0, r1 = 11.2, w = 0.055;
+    var out = "";
+    for (var i = 0; i < N; i++){
+      var a = (i / N) * Math.PI * 2 - Math.PI / 2;
+      var p = [];
+      [[r0, -w], [r1, -w * 0.45], [r1, w * 0.45], [r0, w]].forEach(function(pt){
+        var ang = a + pt[1];
+        p.push((cx + pt[0] * Math.cos(ang)).toFixed(2) + "," + (cy + pt[0] * Math.sin(ang)).toFixed(2));
+      });
+      out += '<polygon points="' + p.join(" ") + '"/>';
+    }
+    g.innerHTML = out;
+  })();
+
+  /* ── Session ───────────────────────────────────────────── */
+  function token(){
+    var t = localStorage.getItem(K_TOKEN), e = localStorage.getItem(K_EXPIRY);
+    if (!t || !e) return null;
+    if (new Date(e) < new Date()){ clearSession(); return null; }
+    return t;
+  }
+  function clearSession(){
+    localStorage.removeItem(K_TOKEN);
+    localStorage.removeItem(K_EXPIRY);
+    localStorage.removeItem(K_NAME);
+  }
+  function call(payload){
+    return fetch(FN, {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + ANON_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); });
+  }
+
+  /* ── Rendering ─────────────────────────────────────────── */
+  var HEARTS = /❤️|❤|💛|🧡|💚|💙|💜|🖤|🤍|🤎|🩷|🩵|🩶|💖|💗|💕|💓|💞|💝|💘|♥️|♥/g;
+  var HEART_SVG = '<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="display:inline-block;vertical-align:-.2em" fill="#FBBD1E" aria-label="heart"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+
+  /* Turn helpline and office numbers into one-tap dial buttons */
+  var PHONE = /(?:\b116\s?123\b|\b999\b|\b111\b|\b101\b|\b0\d{2,4}[\s-]?\d{3,4}[\s-]?\d{3,4}\b)/g;
+  function linkifyPhones(root){
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var nodes = [], n;
+    while ((n = walker.nextNode())) {
+      if (!n.parentElement.closest("a")) nodes.push(n);
+    }
+    nodes.forEach(function(node){
+      var txt = node.nodeValue;
+      if (!PHONE.test(txt)) { PHONE.lastIndex = 0; return; }
+      PHONE.lastIndex = 0;
+      var frag = document.createDocumentFragment(), last = 0, m;
+      while ((m = PHONE.exec(txt))) {
+        if (m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        var a = document.createElement("a");
+        a.className = "tel";
+        a.href = "tel:" + m[0].replace(/[\s-]/g, "");
+        a.textContent = m[0];
+        frag.appendChild(a);
+        last = m.index + m[0].length;
+      }
+      if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+
+  function bot(text){
+    var el = document.createElement("div");
+    el.className = "msg msg-bot";
+    el.innerHTML = String(text)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+      .replace(/\n/g, "<br>")
+      .replace(HEARTS, HEART_SVG);
+    linkifyPhones(el);
+    $("log").appendChild(el);
+    scroll();
+    return el;
+  }
+
+  function me(text){
+    var el = document.createElement("div");
+    el.className = "msg msg-me";
+    el.textContent = text;
+    $("log").appendChild(el);
+    scroll();
+  }
+
+  function thinking(){
+    var el = document.createElement("div");
+    el.className = "thinking";
+    el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#star"/></svg><span class="sr">Finding an answer</span>';
+    $("log").appendChild(el);
+    scroll();
+    return el;
+  }
+
+  function scroll(){
+    var l = $("log");
+    requestAnimationFrame(function(){ l.scrollTop = l.scrollHeight; });
+  }
+
+  function showChips(){
+    var wrap = document.createElement("div");
+    wrap.className = "chips";
+    var lbl = document.createElement("p");
+    lbl.className = "chips-lbl";
+    lbl.textContent = "Common questions";
+    wrap.appendChild(lbl);
+    QUICK.forEach(function(q){
+      var b = document.createElement("button");
+      b.className = "chip";
+      b.type = "button";
+      b.textContent = q;
+      b.addEventListener("click", function(){
+        wrap.remove();
+        ask(q);
+      });
+      wrap.appendChild(b);
+    });
+    $("log").appendChild(wrap);
+    scroll();
+  }
+
+  /* ── Screens ───────────────────────────────────────────── */
+  function showSignin(msg){
+    $("signin").hidden = false;
+    $("log").hidden = true;
+    $("composer").hidden = true;
+    $("menuBtn").hidden = true;
+    $("hdrSub").textContent = "Pay, policies, HR and wellbeing";
+    if (msg) $("signinErr").textContent = msg;
+    setTimeout(function(){ $("surname").focus(); }, 60);
+  }
+
+  function showChat(){
+    $("signin").hidden = true;
+    $("log").hidden = false;
+    $("composer").hidden = false;
+    $("menuBtn").hidden = false;
+    var name = (localStorage.getItem(K_NAME) || "").split(/\s+/)[0];
+    $("hdrSub").textContent = name ? "Signed in as " + name : "Signed in";
+    $("log").innerHTML = "";
+    bot(name
+      ? "Hi " + name + ". Ask me anything about pay, policies, HR or wellbeing. For anything about your rota, visits or timesheets, use Birdie. For anything urgent or about a client, speak to your team leader."
+      : "Ask me anything about pay, policies, HR or wellbeing. For anything about your rota, visits or timesheets, use Birdie. For anything urgent or about a client, speak to your team leader.");
+    showChips();
+    localStorage.setItem(K_VISITS, String(parseInt(localStorage.getItem(K_VISITS) || "0", 10) + 1));
+    maybeOfferInstall();
+  }
+
+  /* ── Sign in ───────────────────────────────────────────── */
+  function signin(){
+    var pinEl = $("pin"), surEl = $("surname"), btn = $("signinBtn"), err = $("signinErr");
+    var pin = pinEl.value.trim();
+    var surname = surEl.value.trim();
+    err.textContent = "";
+    if (!surname){ err.textContent = "Enter your surname."; surEl.focus(); return; }
+    if (!/^\d{2,6}$/.test(pin)) { err.textContent = "Enter your payroll number."; pinEl.focus(); return; }
+    btn.disabled = true; btn.textContent = "Checking…";
+    call({ action: "verify_pin", pin: pin, surname: surname }).then(function(res){
+      if (res.ok){
+        localStorage.setItem(K_TOKEN, res.token);
+        localStorage.setItem(K_EXPIRY, res.expiresAt);
+        localStorage.setItem(K_NAME, (res.staff && res.staff.name) || "");
+        pinEl.value = ""; surEl.value = "";
+        showChat();
+      } else {
+        err.textContent = res.error || "Surname and payroll number don't match.";
+      }
+      btn.disabled = false; btn.textContent = "Sign in";
+    }).catch(function(){
+      err.textContent = "No connection. Check your signal and try again.";
+      btn.disabled = false; btn.textContent = "Sign in";
+    });
+  }
+
+  /* ── Ask ───────────────────────────────────────────────── */
+  var busy = false;
+  function ask(question){
+    if (busy || !question) return;
+    var t = token();
+    if (!t){ showSignin("Your session has ended. Sign in again."); return; }
+    busy = true;
+    $("sendBtn").disabled = true;
+    me(question);
+    var think = thinking();
+    call({ action: "chat", token: t, question: question }).then(function(res){
+      think.remove();
+      if (res.ok) bot(res.answer);
+      else if (res.code === "AUTH"){ clearSession(); showSignin("Your session has ended. Sign in again."); }
+      else bot(res.error || "Something went wrong there. Try asking again.");
+    }).catch(function(){
+      think.remove();
+      bot("No connection right now. Try again once you have signal.");
+    }).then(function(){
+      busy = false;
+      $("sendBtn").disabled = false;
+    });
+  }
+
+  function send(){
+    var box = $("q");
+    var v = box.value.trim();
+    if (!v) return;
+    box.value = "";
+    box.style.height = "auto";
+    ask(v);
+  }
+
+  /* ── Add to home screen ────────────────────────────────── */
+  var deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    maybeOfferInstall();
+  });
+
+  function standalone(){
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+
+  function maybeOfferInstall(){
+    if (standalone()) return;
+    if (localStorage.getItem(K_INSTALL)) return;
+    /* Don't push this at someone on their first visit — it reads as being sold
+       something. Wait until they've come back a few times of their own accord. */
+    var visits = parseInt(localStorage.getItem(K_VISITS) || "0", 10);
+    if (visits < 4) return;
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var box = $("install"), txt = $("installTxt");
+    if (deferredPrompt){
+      txt.innerHTML = 'Use this a lot? <b>Tap here to pin it to your home screen.</b>';
+      box.classList.add("show");
+      txt.style.cursor = "pointer";
+      txt.onclick = function(){
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+        box.classList.remove("show");
+      };
+    } else if (ios){
+      txt.innerHTML = 'Use this a lot? Tap <b>Share</b>, then <b>Add to Home Screen</b> to pin it.';
+      box.classList.add("show");
+    }
+  }
+
+  $("installClose").addEventListener("click", function(){
+    localStorage.setItem(K_INSTALL, "1");
+    $("install").classList.remove("show");
+  });
+
+  /* ── Wiring ────────────────────────────────────────────── */
+  $("signinBtn").addEventListener("click", signin);
+  $("surname").addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); $("pin").focus(); } });
+  $("pin").addEventListener("keydown", function(e){ if (e.key === "Enter") signin(); });
+
+  $("sendBtn").addEventListener("click", send);
+  $("q").addEventListener("keydown", function(e){
+    if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+  $("q").addEventListener("input", function(){
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 120) + "px";
+  });
+
+  $("menuBtn").addEventListener("click", function(){
+    if (!confirm("Sign out of the Seren Assistant?")) return;
+    var t = token();
+    if (t) call({ action: "logout", token: t }).catch(function(){});
+    clearSession();
+    showSignin();
+  });
+
+  function net(){ $("offlineBanner").classList.toggle("show", !navigator.onLine); }
+  window.addEventListener("online", net);
+  window.addEventListener("offline", net);
+  net();
+
+  /* ── Boot ──────────────────────────────────────────────── */
+  if (token()) showChat(); else showSignin();
+
+})();
+</script>
+</body>
+</html>

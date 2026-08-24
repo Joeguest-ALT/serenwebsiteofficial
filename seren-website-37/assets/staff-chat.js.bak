@@ -61,9 +61,7 @@
       .staff-pin-screen{padding:24px 20px;text-align:center;}
       .staff-pin-screen h3{margin:0 0 8px;color:#0E2C53;font-size:16px;}
       .staff-pin-screen p{margin:0 0 16px;color:#666;font-size:13px;}
-      .staff-name-input{width:200px;padding:11px 12px;font-size:16px;text-align:center;border:2px solid #0E2C53;border-radius:8px;outline:none;display:block;margin:0 auto 10px;font-family:inherit;color:#0E2C53;}
-      .staff-name-input:focus{border-color:#FBBD1E;}
-      .staff-pin-input{width:200px;padding:12px;font-size:16px;text-align:center;letter-spacing:4px;border:2px solid #0E2C53;border-radius:8px;outline:none;-webkit-text-security:disc;text-security:disc;}
+      .staff-pin-input{width:140px;padding:12px;font-size:20px;text-align:center;letter-spacing:8px;border:2px solid #0E2C53;border-radius:8px;outline:none;-webkit-text-security:disc;text-security:disc;}
       .staff-pin-input:focus{border-color:#FBBD1E;}
       .staff-pin-submit{display:block;margin:12px auto 0;padding:10px 28px;background:#0E2C53;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
       .staff-pin-submit:hover{background:#1a3a6b;}
@@ -168,48 +166,38 @@
     const screen = document.createElement("div");
     screen.className = "staff-pin-screen";
     screen.innerHTML = `
-      <h3>Staff sign in</h3>
-      <p>Enter your surname and payroll number.</p>
-      <input type="text" class="staff-name-input" id="staff-surname-input" placeholder="Surname" autocomplete="family-name" spellcheck="false" />
-      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" minlength="2" class="staff-pin-input" id="staff-pin-input" placeholder="Payroll no." autocomplete="off" />
+      <h3>Staff access</h3>
+      <p>Enter your PIN to chat with the staff assistant.</p>
+      <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" minlength="2" class="staff-pin-input" id="staff-pin-input" autocomplete="off" />
       <button class="staff-pin-submit" id="staff-pin-submit">Continue</button>
       <div class="staff-pin-error" id="staff-pin-error"></div>
       <button class="staff-pin-back" id="staff-pin-back">← Back to main menu</button>
     `;
     msgs.appendChild(screen);
-    setTimeout(() => $("#staff-surname-input")?.focus(), 50);
-    $("#staff-surname-input")?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") { e.preventDefault(); $("#staff-pin-input")?.focus(); }
-    });
+    setTimeout(() => $("#staff-pin-input")?.focus(), 50);
     $("#staff-pin-input")?.addEventListener("keydown", (e) => {
       if (e.key === "Enter") $("#staff-pin-submit")?.click();
     });
     $("#staff-pin-submit")?.addEventListener("click", async () => {
       const input = $("#staff-pin-input");
-      const surEl = $("#staff-surname-input");
       const submit = $("#staff-pin-submit");
       const errEl = $("#staff-pin-error");
       const pin = input.value.trim();
-      const surname = (surEl && surEl.value || "").trim();
       errEl.textContent = "";
-      if (!surname) {
-        errEl.textContent = "Enter your surname.";
-        return;
-      }
       if (!/^\d{2,6}$/.test(pin)) {
-        errEl.textContent = "Enter your payroll number.";
+        errEl.textContent = "PIN must be 2–6 digits.";
         return;
       }
       submit.disabled = true;
       submit.textContent = "Checking…";
       try {
-        const res = await callFunction({ action: "verify_pin", pin, surname });
+        const res = await callFunction({ action: "verify_pin", pin });
         if (res.ok) {
           storeToken(res.token, res.expiresAt);
           localStorage.setItem("seren_staff_name", res.staff?.name || "");
           enterStaffMode();
         } else {
-          errEl.textContent = res.error || "Surname and payroll number do not match.";
+          errEl.textContent = res.error || "PIN not recognised.";
           submit.disabled = false;
           submit.textContent = "Continue";
         }
@@ -296,8 +284,7 @@
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
       .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
-      .replace(/\n/g, "<br>")
-      .replace(/❤️|❤|💛|🧡|💚|💙|💜|🖤|🤍|🤎|🩷|🩵|🩶|💖|💗|💕|💓|💞|💝|💘|♥️|♥/g, '<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" style="display:inline-block;vertical-align:-0.2em" fill="#FBBD1E" aria-label="heart"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+      .replace(/\n/g, "<br>");
     el.innerHTML = html;
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
