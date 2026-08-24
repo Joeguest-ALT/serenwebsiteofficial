@@ -239,6 +239,21 @@
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important;transition:none !important;}
   }
+
+  /* Desktop: the layout is built for a phone, so present it as one rather
+     than stretching it across a wide column. */
+  @media (min-width: 760px){
+    .app{
+      max-width:420px;
+      height:calc(100vh - 56px);
+      height:calc(100dvh - 56px);
+      margin:28px auto;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 18px 50px rgba(0,0,0,.32);
+    }
+    .signin{max-width:none;padding-left:32px;padding-right:32px;}
+  }
 </style>
 </head>
 <body>
