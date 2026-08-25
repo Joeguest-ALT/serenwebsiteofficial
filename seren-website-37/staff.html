@@ -240,19 +240,35 @@
     *{animation:none !important;transition:none !important;}
   }
 
-  /* Desktop: the layout is built for a phone, so present it as one rather
-     than stretching it across a wide column. */
+  /* Desktop: the layout is built for a phone, so present it as a centred
+     card that hugs its content — not a full-height panel with dead space. */
   @media (min-width: 760px){
-    .app{
-      max-width:420px;
-      height:calc(100vh - 56px);
-      height:calc(100dvh - 56px);
-      margin:28px auto;
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:0 18px 50px rgba(0,0,0,.32);
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px 16px;
     }
-    .signin{max-width:none;padding-left:32px;padding-right:32px;}
+    .app{
+      max-width:440px;
+      width:100%;
+      height:auto;
+      max-height:calc(100vh - 64px);
+      max-height:calc(100dvh - 64px);
+      margin:0;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 20px 56px rgba(0,0,0,.34);
+    }
+    .signin{
+      max-width:none;
+      padding:36px 36px 40px;
+    }
+    .signin-mark{width:44px;height:44px;margin-bottom:16px;}
+    .signin .lede{margin-bottom:24px;}
+    .signin-foot{margin-top:20px;}
+    /* Chat needs room to breathe; sign-in does not. */
+    .log:not([hidden]){min-height:440px;}
   }
 </style>
 </head>
