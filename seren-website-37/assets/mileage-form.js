@@ -20,6 +20,15 @@
 
   var K_DRAFT = "seren_mileage_draft";
   var BRANCHES = ["Cardiff", "Port Talbot", "Caerphilly", "Bridgend", "Blaenau Gwent"];
+  /* Must stay in step with REASONS in the staff-chat edge function */
+  var REASONS = [
+    "Double run",
+    "Shopping or outing with a client",
+    "Appointment or hospital visit",
+    "Short-notice cover",
+    "Office, training or meeting",
+    "Other"
+  ];
   var open = false;
 
   var CSS = ""
@@ -100,7 +109,7 @@
       branch: d.branch || "",
       weekEnding: d.weekEnding || thisFriday(),
       journeys: (d.journeys && d.journeys.length)
-        ? d.journeys : [{ date: today(), from: "", to: "", miles: "" }]
+        ? d.journeys : [{ date: today(), from: "", to: "", miles: "", reason: "", note: "" }]
     };
 
     var box = document.createElement("div");
@@ -137,6 +146,16 @@
           + escA(j.from) + '" placeholder="Client initials, address, postcode" /></div>'
           + '<div class="smf-f smf-wide"><label>To</label><input type="text" data-f="to" value="'
           + escA(j.to) + '" placeholder="Client initials, address, postcode" /></div>'
+          + '<div class="smf-f smf-wide"><label>Why was this journey needed?</label>'
+          + '<select data-f="reason">'
+          + ['<option value="">Choose a reason…</option>'].concat(REASONS.map(function (r) {
+              return '<option value="' + escA(r) + '"' + (j.reason === r ? " selected" : "") + ">" + esc(r) + "</option>";
+            })).join("")
+          + "</select></div>"
+          + '<div class="smf-f smf-wide"><label>Anything else Tyler should know?'
+          + '<span style="font-weight:400;color:#5B6B80"> (optional)</span></label>'
+          + '<input type="text" data-f="note" value="' + escA(j.note)
+          + '" maxlength="200" placeholder="e.g. covered NC\u2019s round at short notice" /></div>'
           + "</div></div>";
       }).join("");
 
@@ -172,7 +191,8 @@
       Array.prototype.forEach.call(box.querySelectorAll(".smf-row"), function (row) {
         var i = parseInt(row.getAttribute("data-i"), 10);
         Array.prototype.forEach.call(row.querySelectorAll("[data-f]"), function (inp) {
-          inp.addEventListener("input", function () {
+          var ev = inp.tagName === "SELECT" ? "change" : "input";
+          inp.addEventListener(ev, function () {
             st.journeys[i][this.getAttribute("data-f")] = this.value;
             box.querySelector("#smf-total").textContent = total().toFixed(1);
             persist();
@@ -190,7 +210,7 @@
       box.querySelector("#smf-add").addEventListener("click", function () {
         var last = st.journeys[st.journeys.length - 1] || {};
         /* Journeys chain, so the next From is the last To — same as on paper */
-        st.journeys.push({ date: last.date || today(), from: last.to || "", to: "", miles: "" });
+        st.journeys.push({ date: last.date || today(), from: last.to || "", to: "", miles: "", reason: last.reason || "", note: "" });
         persist(); draw();
         var rows = box.querySelectorAll(".smf-row");
         var el = rows[rows.length - 1];
@@ -217,6 +237,10 @@
         var m = parseFloat(j.miles);
         if (!isFinite(m) || m <= 0) return "Journey " + n + " needs the miles.";
         if (m > 500) return "Journey " + n + " looks too far \u2014 check the miles.";
+        if (!j.reason) return "Journey " + n + " needs a reason.";
+        if (j.reason === "Other" && !String(j.note).trim()) {
+          return "Journey " + n + " is marked Other \u2014 say briefly what it was for.";
+        }
       }
       return null;
     }
@@ -227,7 +251,9 @@
           date: j.date,
           from: String(j.from).trim(),
           to: String(j.to).trim(),
-          miles: Math.round(parseFloat(j.miles) * 10) / 10
+          miles: Math.round(parseFloat(j.miles) * 10) / 10,
+          reason: String(j.reason || "").trim(),
+          note: String(j.note || "").trim()
         };
       });
     }
@@ -243,9 +269,9 @@
       };
       var lines = ["Employee,Branch,Week ending",
         [o.name || "", st.branch, st.weekEnding].map(q).join(","),
-        "", "Date,From,To,Miles"];
-      cleaned().forEach(function (j) { lines.push([j.date, j.from, j.to, j.miles].map(q).join(",")); });
-      lines.push(",,Total," + total().toFixed(1));
+        "", "Date,From,To,Miles,Reason,Note"];
+      cleaned().forEach(function (j) { lines.push([j.date, j.from, j.to, j.miles, j.reason, j.note].map(q).join(",")); });
+      lines.push(",,Total," + total().toFixed(1) + ",,");
       var blob = new Blob([lines.join("\n")], { type: "text/csv" });
       var a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
