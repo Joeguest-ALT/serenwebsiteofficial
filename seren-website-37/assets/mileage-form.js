@@ -153,7 +153,7 @@
               return '<option value="' + escA(r) + '"' + (j.reason === r ? " selected" : "") + ">" + esc(r) + "</option>";
             })).join("")
           + "</select></div>"
-          + '<div class="smf-f smf-wide"><label>Anything else Tyler should know?'
+          + '<div class="smf-f smf-wide"><label>Anything else payroll should know?'
           + '<span style="font-weight:400;color:#5B6B80"> (optional)</span></label>'
           + '<input type="text" data-f="note" value="' + escA(j.note)
           + '" maxlength="200" placeholder="e.g. covered NC\u2019s round at short notice" /></div>'
@@ -172,7 +172,7 @@
         + '<div class="smf-tot"><span>Total miles</span><strong id="smf-total">' + total().toFixed(1) + "</strong></div>"
         + '<div class="smf-note"><b>Only from your first appointment onwards.</b> Home to your first call, and your '
         + "last call back home, counts as your commute. Get claims in by <b>Friday</b> \u2014 they\u2019re paid every second Monday.</div>"
-        + '<div class="smf-acts"><button type="button" class="smf-btn smf-go" id="smf-send">Send to Tyler</button>'
+        + '<div class="smf-acts"><button type="button" class="smf-btn smf-go" id="smf-send">Send to payroll</button>'
         + '<button type="button" class="smf-btn smf-alt" id="smf-dl">Download a copy</button></div>'
         + '<p class="smf-err" id="smf-err"></p>'
         + '<div style="text-align:center"><button type="button" class="smf-cancel" id="smf-cancel">Cancel this claim</button></div>';
@@ -303,7 +303,7 @@
           if (o.onBot) {
             o.onBot("Sent. **" + res.totalMiles + " miles** across " + res.journeys
               + (res.journeys === 1 ? " journey" : " journeys") + ", week ending " + res.weekEnding
-              + ", has gone to Tyler.\n\nYour reference is " + String(res.reference).slice(0, 8)
+              + ", has gone to payroll.\n\nYour reference is " + String(res.reference).slice(0, 8)
               + ". Claims in by Friday are paid the following second Monday.");
           }
         } else if (res && res.code === "AUTH") {
@@ -311,11 +311,11 @@
           if (o.onExpired) o.onExpired();
         } else {
           errEl.textContent = (res && res.error) || "That didn't send. Try again in a moment.";
-          btn.disabled = false; btn.textContent = "Send to Tyler";
+          btn.disabled = false; btn.textContent = "Send to payroll";
         }
       }).catch(function () {
         errEl.textContent = "No connection. Your claim is saved on this device \u2014 try again when you have signal.";
-        btn.disabled = false; btn.textContent = "Send to Tyler";
+        btn.disabled = false; btn.textContent = "Send to payroll";
       });
     }
 

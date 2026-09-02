@@ -347,7 +347,7 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=4" defer></script>
+<script src="assets/mileage-form.js?v=5" defer></script>
 <script>
 (function(){
   "use strict";
@@ -498,7 +498,7 @@
         wrap.remove();
         if (q === "Claim extra mileage"){
           me("I need to claim some extra mileage");
-          bot("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+          bot("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
           openMileageForm();
           return;
         }
@@ -569,7 +569,7 @@
     if (busy || !question) return;
     if (wantsMileageForm(question)){
       me(question);
-      bot("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+      bot("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
       openMileageForm();
       return;
     }

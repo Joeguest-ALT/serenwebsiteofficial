@@ -373,7 +373,7 @@
     appendUserMessage(question);
 
     if (wantsMileage(question)) {
-      appendBotMessage("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+      appendBotMessage("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
       openMileageForm();
       return;
     }
