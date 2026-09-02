@@ -314,6 +314,51 @@
     return el;
   }
 
+  /* ── Mileage claim form (shared module) ─────────────────────── */
+  let mileageLoading = null;
+  function loadMileageModule() {
+    if (window.SerenMileage) return Promise.resolve();
+    if (mileageLoading) return mileageLoading;
+    mileageLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "/assets/mileage-form.js";
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return mileageLoading;
+  }
+
+  function wantsMileage(text) {
+    const t = String(text).toLowerCase();
+    if (!/mileage|milage|miles|petrol|fuel/.test(t)) return false;
+    return /form|claim|expense|submit|fill|sheet|log|put in|send/.test(t);
+  }
+
+  async function openMileageForm() {
+    try {
+      await loadMileageModule();
+    } catch (e) {
+      appendBotMessage("I couldn't load the mileage form. Open seren.wales/staff and try there.");
+      return;
+    }
+    const msgs = $("#chatbot-messages");
+    if (!msgs || !window.SerenMileage) return;
+    window.SerenMileage.open({
+      mount: msgs,
+      name: localStorage.getItem("seren_staff_name") || "you",
+      getToken: getStoredToken,
+      call: callFunction,
+      onBot: appendBotMessage,
+      scroll: () => { msgs.scrollTop = msgs.scrollHeight; },
+      onExpired: () => {
+        appendBotMessage("Your session has expired — please log in again.");
+        clearToken();
+        setTimeout(() => enterPinMode(), 1200);
+      }
+    });
+  }
+
   async function sendStaffMessage() {
     const txtInput = $("#chatbot-text-input");
     if (!txtInput) return;
@@ -326,6 +371,13 @@
     }
     txtInput.value = "";
     appendUserMessage(question);
+
+    if (wantsMileage(question)) {
+      appendBotMessage("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+      openMileageForm();
+      return;
+    }
+
     const typingEl = appendTyping();
     try {
       const res = await callFunction({ action: "chat", token, question });
