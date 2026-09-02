@@ -130,6 +130,52 @@
 
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
+  /* ── Mileage claim form ───────────────────────────── */
+  .mform{align-self:stretch;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:18px;margin:8px 0 4px;}
+  .mform h3{margin:0 0 3px;font-size:17px;font-weight:600;color:var(--ink);letter-spacing:-0.01em;}
+  .mform .mform-sub{margin:0 0 16px;font-size:13px;color:var(--muted);line-height:1.5;}
+  .mform-who{background:var(--bot-bg);border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--ink);margin-bottom:14px;}
+  .mform-who strong{font-weight:600;}
+  .mfield{margin-bottom:13px;}
+  .mfield label{display:block;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:5px;}
+  .mfield select,.mfield input{width:100%;min-height:46px;font-family:inherit;font-size:16px;padding:10px 12px;
+    border:1.5px solid var(--line);border-radius:10px;outline:none;color:var(--ink);background:#fff;}
+  .mfield select:focus,.mfield input:focus{border-color:var(--navy);}
+
+  .mrow{border:1.5px solid var(--line);border-radius:12px;padding:13px;margin-bottom:10px;position:relative;}
+  .mrow-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+  .mrow-n{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+  .mrow-del{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;
+    min-height:32px;padding:0 4px;text-decoration:underline;}
+  .mrow-del:hover{color:var(--error);}
+  .mrow-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .mrow-grid .mfield{margin-bottom:0;}
+  .mrow-grid .wide{grid-column:1 / -1;}
+
+  .madd{width:100%;min-height:46px;background:#fff;border:1.5px dashed var(--line);border-radius:11px;
+    font-family:inherit;font-size:14.5px;font-weight:500;color:var(--navy);cursor:pointer;margin-bottom:14px;}
+  .madd:hover{border-color:var(--navy);background:#FAFBFD;}
+
+  .mtotal{display:flex;justify-content:space-between;align-items:center;background:var(--navy);
+    border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+  .mtotal span{color:rgba(255,255,255,.75);font-size:13.5px;}
+  .mtotal strong{color:var(--gold);font-size:22px;font-weight:600;}
+
+  .mnote{font-size:12px;color:var(--muted);line-height:1.6;background:#FDF6E3;border-left:3px solid var(--gold);
+    border-radius:7px;padding:11px 13px;margin-bottom:14px;}
+  .mnote b{color:#5A4300;}
+
+  .mactions{display:flex;gap:9px;flex-wrap:wrap;}
+  .mbtn{flex:1 1 auto;min-height:50px;border-radius:11px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border:none;}
+  .mbtn-go{background:var(--navy);color:#fff;}
+  .mbtn-go:hover{background:#14386a;}
+  .mbtn-go:disabled{opacity:.5;cursor:not-allowed;}
+  .mbtn-alt{background:#fff;border:1.5px solid var(--line);color:var(--ink);}
+  .mbtn-alt:hover{border-color:var(--navy);}
+  .mbtn-cancel{flex:0 0 auto;background:none;border:none;color:var(--muted);font-family:inherit;font-size:13.5px;
+    cursor:pointer;min-height:50px;padding:0 10px;text-decoration:underline;}
+  .merr{color:var(--error);font-size:13.5px;font-weight:500;margin:11px 0 0;min-height:19px;}
+
   /* ── Quick actions ──────────────────────────────────── */
   .chips{padding:6px 16px 4px;display:flex;flex-direction:column;gap:8px;}
   .chips-lbl{
@@ -368,7 +414,8 @@
     "How do I book annual leave?",
     "How do I report sickness?",
     "What can I claim for mileage and expenses?",
-    "I'm struggling — what support is there?"
+    "I'm struggling — what support is there?",
+    "Claim extra mileage"
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -494,6 +541,12 @@
       b.textContent = q;
       b.addEventListener("click", function(){
         wrap.remove();
+        if (q === "Claim extra mileage"){
+          me("I need to claim some extra mileage");
+          bot("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+          openMileageForm();
+          return;
+        }
         ask(q);
       });
       wrap.appendChild(b);
@@ -559,6 +612,12 @@
   var busy = false;
   function ask(question){
     if (busy || !question) return;
+    if (wantsMileageForm(question)){
+      me(question);
+      bot("Here's the mileage claim form. Fill it in and it goes straight to Tyler.");
+      openMileageForm();
+      return;
+    }
     var t = token();
     if (!t){ showSignin("Your session has ended. Sign in again."); return; }
     busy = true;
@@ -628,6 +687,238 @@
     localStorage.setItem(K_INSTALL, "1");
     $("install").classList.remove("show");
   });
+
+  /* ── Mileage claim form ────────────────────────────────── */
+  var K_DRAFT = "seren_mileage_draft";
+  var BRANCHES = ["Cardiff", "Port Talbot", "Caerphilly", "Bridgend", "Blaenau Gwent"];
+  var mformOpen = false;
+
+  function thisFriday(){
+    var d = new Date();
+    d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));   // next/this Friday
+    return d.toISOString().slice(0, 10);
+  }
+  function today(){ return new Date().toISOString().slice(0, 10); }
+
+  function loadDraft(){
+    try { return JSON.parse(localStorage.getItem(K_DRAFT) || "null"); } catch(e){ return null; }
+  }
+  function saveDraft(d){
+    try { localStorage.setItem(K_DRAFT, JSON.stringify(d)); } catch(e){}
+  }
+  function clearDraft(){ try { localStorage.removeItem(K_DRAFT); } catch(e){} }
+
+  function openMileageForm(){
+    if (mformOpen) return;
+    mformOpen = true;
+
+    var draft = loadDraft() || {};
+    var state = {
+      branch: draft.branch || "",
+      weekEnding: draft.weekEnding || thisFriday(),
+      journeys: (draft.journeys && draft.journeys.length) ? draft.journeys
+                : [{ date: today(), from: "", to: "", miles: "" }]
+    };
+
+    var box = document.createElement("div");
+    box.className = "mform";
+    $("log").appendChild(box);
+
+    function total(){
+      return state.journeys.reduce(function(t, j){
+        var m = parseFloat(j.miles);
+        return t + (isFinite(m) && m > 0 ? m : 0);
+      }, 0);
+    }
+
+    function persist(){ saveDraft(state); }
+
+    function draw(){
+      var opts = ['<option value="">Choose your branch…</option>'].concat(
+        BRANCHES.map(function(b){
+          return '<option value="' + b + '"' + (state.branch === b ? " selected" : "") + ">" + b + "</option>";
+        })).join("");
+
+      var rows = state.journeys.map(function(j, i){
+        return '<div class="mrow" data-i="' + i + '">'
+          + '<div class="mrow-head"><span class="mrow-n">Journey ' + (i + 1) + '</span>'
+          + (state.journeys.length > 1 ? '<button type="button" class="mrow-del" data-del="' + i + '">Remove</button>' : '')
+          + '</div>'
+          + '<div class="mrow-grid">'
+          +   '<div class="mfield"><label>Date</label>'
+          +     '<input type="date" data-f="date" value="' + (j.date || "") + '" /></div>'
+          +   '<div class="mfield"><label>Miles</label>'
+          +     '<input type="text" inputmode="decimal" data-f="miles" value="' + (j.miles || "") + '" placeholder="e.g. 3.4" /></div>'
+          +   '<div class="mfield wide"><label>From</label>'
+          +     '<input type="text" data-f="from" value="' + escAttr(j.from) + '" placeholder="Client initials, address, postcode" /></div>'
+          +   '<div class="mfield wide"><label>To</label>'
+          +     '<input type="text" data-f="to" value="' + escAttr(j.to) + '" placeholder="Client initials, address, postcode" /></div>'
+          + '</div></div>';
+      }).join("");
+
+      box.innerHTML =
+          '<h3>Mileage expense claim</h3>'
+        + '<p class="mform-sub">For extra mileage Birdie hasn\u2019t picked up \u2014 double runs, shopping trips, outings and short-notice cover.</p>'
+        + '<div class="mform-who">Claiming as <strong>' + escHtml(localStorage.getItem(K_NAME) || "you") + '</strong></div>'
+        + '<div class="mfield"><label for="m-branch">Branch</label><select id="m-branch">' + opts + '</select></div>'
+        + '<div class="mfield"><label for="m-week">Week ending (Friday)</label>'
+        +   '<input type="date" id="m-week" value="' + state.weekEnding + '" /></div>'
+        + rows
+        + '<button type="button" class="madd" id="m-add">+ Add another journey</button>'
+        + '<div class="mtotal"><span>Total miles</span><strong id="m-total">' + total().toFixed(1) + '</strong></div>'
+        + '<div class="mnote"><b>Only from your first appointment onwards.</b> Home to your first call, and your last call back home, counts as your commute. '
+        + 'Get claims in by <b>Friday</b> \u2014 they\u2019re paid every second Monday.</div>'
+        + '<div class="mactions">'
+        +   '<button type="button" class="mbtn mbtn-go" id="m-send">Send to Tyler</button>'
+        +   '<button type="button" class="mbtn mbtn-alt" id="m-dl">Download a copy</button>'
+        + '</div>'
+        + '<p class="merr" id="m-err"></p>'
+        + '<div style="text-align:center"><button type="button" class="mbtn-cancel" id="m-cancel">Cancel this claim</button></div>';
+
+      wire();
+      scroll();
+    }
+
+    function wire(){
+      box.querySelector("#m-branch").addEventListener("change", function(){
+        state.branch = this.value; persist();
+      });
+      box.querySelector("#m-week").addEventListener("change", function(){
+        state.weekEnding = this.value; persist();
+      });
+
+      box.querySelectorAll(".mrow").forEach(function(row){
+        var i = parseInt(row.getAttribute("data-i"), 10);
+        row.querySelectorAll("[data-f]").forEach(function(inp){
+          inp.addEventListener("input", function(){
+            state.journeys[i][this.getAttribute("data-f")] = this.value;
+            box.querySelector("#m-total").textContent = total().toFixed(1);
+            persist();
+          });
+        });
+      });
+
+      box.querySelectorAll("[data-del]").forEach(function(b){
+        b.addEventListener("click", function(){
+          state.journeys.splice(parseInt(this.getAttribute("data-del"), 10), 1);
+          persist(); draw();
+        });
+      });
+
+      box.querySelector("#m-add").addEventListener("click", function(){
+        var last = state.journeys[state.journeys.length - 1] || {};
+        /* Journeys chain, so the next From is the last To, same as on paper */
+        state.journeys.push({ date: last.date || today(), from: last.to || "", to: "", miles: "" });
+        persist(); draw();
+        var rows = box.querySelectorAll(".mrow");
+        var lastRow = rows[rows.length - 1];
+        if (lastRow) lastRow.querySelector('[data-f="to"]').focus();
+      });
+
+      box.querySelector("#m-dl").addEventListener("click", downloadCsv);
+      box.querySelector("#m-send").addEventListener("click", submit);
+      box.querySelector("#m-cancel").addEventListener("click", function(){
+        if (!confirm("Throw this claim away?")) return;
+        clearDraft(); mformOpen = false; box.remove();
+        bot("No problem \u2014 that claim's been cleared.");
+      });
+    }
+
+    function validate(){
+      if (!state.branch) return "Choose which branch you work from.";
+      if (!state.weekEnding) return "Choose the week ending date.";
+      for (var i = 0; i < state.journeys.length; i++){
+        var j = state.journeys[i], n = i + 1;
+        if (!j.date) return "Journey " + n + " needs a date.";
+        if (!String(j.from).trim()) return "Journey " + n + " needs a From.";
+        if (!String(j.to).trim()) return "Journey " + n + " needs a To.";
+        var m = parseFloat(j.miles);
+        if (!isFinite(m) || m <= 0) return "Journey " + n + " needs the miles.";
+        if (m > 500) return "Journey " + n + " looks too far \u2014 check the miles.";
+      }
+      return null;
+    }
+
+    function cleaned(){
+      return state.journeys.map(function(j){
+        return {
+          date: j.date,
+          from: String(j.from).trim(),
+          to: String(j.to).trim(),
+          miles: Math.round(parseFloat(j.miles) * 10) / 10
+        };
+      });
+    }
+
+    function downloadCsv(){
+      var err = validate();
+      if (err){ box.querySelector("#m-err").textContent = err; return; }
+      box.querySelector("#m-err").textContent = "";
+      var q = function(v){ v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+      var lines = ["Employee,Branch,Week ending",
+                   [localStorage.getItem(K_NAME) || "", state.branch, state.weekEnding].map(q).join(","),
+                   "", "Date,From,To,Miles"];
+      cleaned().forEach(function(j){ lines.push([j.date, j.from, j.to, j.miles].map(q).join(",")); });
+      lines.push(",,Total," + total().toFixed(1));
+      var blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "mileage-" + state.weekEnding + ".csv";
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+    }
+
+    function submit(){
+      var errEl = box.querySelector("#m-err");
+      var err = validate();
+      if (err){ errEl.textContent = err; return; }
+      errEl.textContent = "";
+
+      var t = token();
+      if (!t){ showSignin("Your session has ended. Sign in again."); return; }
+
+      var btn = box.querySelector("#m-send");
+      btn.disabled = true; btn.textContent = "Sending\u2026";
+
+      call({
+        action: "submit_mileage",
+        token: t,
+        claim: { branch: state.branch, weekEnding: state.weekEnding, journeys: cleaned() }
+      }).then(function(res){
+        if (res.ok){
+          clearDraft(); mformOpen = false;
+          box.remove();
+          bot("Sent. **" + res.totalMiles + " miles** across " + res.journeys
+            + (res.journeys === 1 ? " journey" : " journeys")
+            + ", week ending " + res.weekEnding + ", has gone to Tyler.\n\n"
+            + "Your reference is " + String(res.reference).slice(0, 8)
+            + ". Claims in by Friday are paid the following second Monday.");
+        } else if (res.code === "AUTH"){
+          clearSession(); showSignin("Your session has ended. Sign in again.");
+        } else {
+          errEl.textContent = res.error || "That didn't send. Try again in a moment.";
+          btn.disabled = false; btn.textContent = "Send to Tyler";
+        }
+      }).catch(function(){
+        errEl.textContent = "No connection. Your claim is saved on this phone \u2014 try again when you have signal.";
+        btn.disabled = false; btn.textContent = "Send to Tyler";
+      });
+    }
+
+    draw();
+  }
+
+  function escHtml(s){
+    return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+  function escAttr(s){ return escHtml(s).replace(/"/g, "&quot;"); }
+
+  /* Recognise a mileage request without relying on the model to spot it */
+  function wantsMileageForm(text){
+    var t = String(text).toLowerCase();
+    if (!/mileage|milage|miles|petrol|fuel/.test(t)) return false;
+    return /form|claim|expense|submit|fill|sheet|log|put in|send/.test(t);
+  }
 
   /* ── Wiring ────────────────────────────────────────────── */
   $("signinBtn").addEventListener("click", signin);
