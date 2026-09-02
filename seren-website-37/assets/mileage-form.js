@@ -24,6 +24,7 @@
   var REASONS = [
     "Double run",
     "Shopping or outing with a client",
+    "Medication pick-up",
     "Appointment or hospital visit",
     "Short-notice cover",
     "Office, training or meeting",
