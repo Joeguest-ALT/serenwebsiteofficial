@@ -329,6 +329,53 @@
     return mileageLoading;
   }
 
+  let giftLoading = null;
+  function loadGiftModule() {
+    if (window.SerenGift) return Promise.resolve();
+    if (giftLoading) return giftLoading;
+    giftLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "/assets/gift-form.js";
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return giftLoading;
+  }
+
+  async function openGiftForm() {
+    try {
+      await loadGiftModule();
+    } catch (e) {
+      appendBotMessage("I couldn't load the declaration form. Open seren.wales/staff and try there.");
+      return;
+    }
+    const msgs = $("#chatbot-messages");
+    if (!msgs || !window.SerenGift) return;
+    window.SerenGift.open({
+      mount: msgs,
+      name: localStorage.getItem("seren_staff_name") || "you",
+      getToken: getStoredToken,
+      call: callFunction,
+      onBot: appendBotMessage,
+      scroll: () => { msgs.scrollTop = msgs.scrollHeight; },
+      onExpired: () => {
+        appendBotMessage("Your session has expired — please log in again.");
+        clearToken();
+        setTimeout(() => enterPinMode(), 1200);
+      }
+    });
+  }
+
+  function wantsGift(text) {
+    const t = String(text).toLowerCase();
+    if (/\bgift\b|\bgifts\b|\bpresent\b|\btip\b|\btips\b|\bmoney\b|\bcash\b|\bvoucher\b|\bbequest\b|\blegacy\b|\bwill\b|£\s?\d/.test(t)
+        && /declar|log|report|offer|left me|gave me|given me|form/.test(t)) return true;
+    if (/someone offered me|client offered me|offered me a|tried to give me|wants to leave me/.test(t)) return true;
+    if (/declare a gift|gift declaration|declare an offer/.test(t)) return true;
+    return false;
+  }
+
   function wantsMileage(text) {
     const t = String(text).toLowerCase();
     if (!/mileage|milage|miles|petrol|fuel/.test(t)) return false;
@@ -375,6 +422,11 @@
     if (wantsMileage(question)) {
       appendBotMessage("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
       openMileageForm();
+      return;
+    }
+
+    if (wantsGift(question)) {
+      openGiftForm();
       return;
     }
 

@@ -347,7 +347,8 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=5" defer></script>
+<script src="assets/mileage-form.js?v=6" defer></script>
+<script src="assets/gift-form.js?v=6" defer></script>
 <script>
 (function(){
   "use strict";
@@ -370,7 +371,8 @@
     "How do I report sickness?",
     "What can I claim for mileage and expenses?",
     "I'm struggling — what support is there?",
-    "Claim extra mileage"
+    "Claim extra mileage",
+    "Declare a gift or offer"
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -502,6 +504,11 @@
           openMileageForm();
           return;
         }
+        if (q === "Declare a gift or offer"){
+          me("Someone offered me something");
+          openGiftForm();
+          return;
+        }
         ask(q);
       });
       wrap.appendChild(b);
@@ -571,6 +578,11 @@
       me(question);
       bot("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
       openMileageForm();
+      return;
+    }
+    if (wantsGiftForm(question)){
+      me(question);
+      openGiftForm();
       return;
     }
     var t = token();
@@ -658,6 +670,23 @@
   }
   function wantsMileageForm(t){
     return !!(window.SerenMileage && window.SerenMileage.wants(t));
+  }
+
+  /* ── Gift declaration form (assets/gift-form.js) ───────── */
+  function openGiftForm(){
+    if (!window.SerenGift) return;
+    window.SerenGift.open({
+      mount: $("log"),
+      name: localStorage.getItem(K_NAME) || "you",
+      getToken: token,
+      call: call,
+      onBot: bot,
+      scroll: scroll,
+      onExpired: function(){ clearSession(); showSignin("Your session has ended. Sign in again."); }
+    });
+  }
+  function wantsGiftForm(t){
+    return !!(window.SerenGift && window.SerenGift.wants(t));
   }
 
   /* ── Wiring ────────────────────────────────────────────── */
