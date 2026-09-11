@@ -1746,7 +1746,7 @@
     <div class="jobs-cta reveal">
       <h2>Don't see the right role?</h2>
       <p>Send us your details anyway. New rounds come up constantly across South Wales, and we'll get in touch when something suits you.</p>
-      <a href="https://wkf.ms/4bnnDNK" target="_blank" rel="noopener noreferrer" class="btn-gold" style="font-size:14.5px;padding:16px 34px;">Register your interest &rarr;</a>
+      <a href="contact.html#form-wrap" class="btn-gold" style="font-size:14.5px;padding:16px 34px;">Register your interest &rarr;</a>
       <p style="margin:22px 0 0;font-size:14px;color:rgba(255,255,255,.6);">Or call us on <a href="tel:+441792324800" style="color:#FBBD1E;">01792 324800</a></p>
     </div>
   </div>
@@ -1768,33 +1768,37 @@
       area: "Blaenau Gwent",
       places: "Ebbw Vale · Tredegar",
       pay: "£14.00",
-      female: true
+      female: true,
+      url: "https://app.altisgroup.co.uk/apply/3b7de3fc-156d-49ef-b594-ec3d783ce46e"
     },
     {
       title: "Female Community Care Worker",
       area: "Caerphilly",
       places: "Caerphilly and surrounding valleys",
       pay: "£14.00",
-      female: true
+      female: true,
+      url: "https://app.altisgroup.co.uk/apply/205b284b-9d2d-4d8c-9c11-6774e9350521"
     },
     {
-      title: "Community Care Worker",
+      title: "Female Community Care Worker",
       area: "Bridgend",
       places: "Bridgend · Maesteg · Porthcawl",
       pay: "£13.45",
-      female: false
+      female: true,
+      url: "https://app.altisgroup.co.uk/apply/f7908c5b-b97a-4573-a89b-d4ddc7409b15"
     },
     {
-      title: "Community Care Worker",
+      title: "Female Community Care Worker",
       area: "Neath Port Talbot",
       places: "Neath · Port Talbot · Pontardawe · Glynneath",
       pay: "£13.45",
-      female: false
+      female: true,
+      url: "https://app.altisgroup.co.uk/apply/c7139b6d-6cc6-483a-8831-e054af8f6768"
     }
   ];
 
-  /* Where the Apply button sends people. */
-  var APPLY_URL = "https://wkf.ms/4bnnDNK";
+  /* For people who don't fit a listed role. */
+  var APPLY_URL = "contact.html#form-wrap";
 
   var listEl = document.getElementById("vac-list");
   var barEl  = document.getElementById("vac-toolbar");
@@ -1869,7 +1873,7 @@
 
       + femaleNote
       + '<div class="vac-foot">'
-      +   '<a class="vac-apply" href="' + esc(APPLY_URL) + '" target="_blank" rel="noopener noreferrer">Apply for this role &rarr;</a>'
+      +   '<a class="vac-apply" href="' + esc(job.url) + '" target="_blank" rel="noopener noreferrer">Apply for this role &rarr;</a>'
       +   '<span class="vac-note">Right to work in the UK required. Sponsorship not available.</span>'
       + '</div>'
       + '</article>';
@@ -1884,7 +1888,7 @@
       listEl.innerHTML = '<div class="vac-state"><h3>Nothing open there today</h3>'
         + '<p>Roles come up constantly. Send us your details and we&rsquo;ll be in touch when something suits you.</p>'
         + '<a class="btn-navy" style="font-size:14px;padding:14px 28px;" href="' + APPLY_URL
-        + '" target="_blank" rel="noopener noreferrer">Register your interest &rarr;</a></div>';
+        + '">Register your interest &rarr;</a></div>';
       return;
     }
     listEl.innerHTML = shown.map(cardHtml).join("");
@@ -1943,7 +1947,7 @@
           "value": { "@type": "QuantitativeValue", "value": parseFloat(j.pay.replace("£", "")), "unitText": "HOUR" }
         },
         "directApply": false,
-        "url": "https://seren.wales/jobs"
+        "url": j.url
       };
     });
     var tag = document.createElement("script");
