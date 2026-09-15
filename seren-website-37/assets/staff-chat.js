@@ -228,6 +228,7 @@
     hideOptions();
     showTextInput();
     appendBotMessage(welcomeFor(localStorage.getItem("seren_staff_name")));
+    checkExpenseReminder();
     const sendBtn = $("#chatbot-send");
     const txtInput = $("#chatbot-text-input");
     if (txtInput && !txtInput.dataset.staffWired) {
@@ -367,6 +368,67 @@
     });
   }
 
+  let expenseLoading = null;
+  function loadExpenseModule() {
+    if (window.SerenExpense) return Promise.resolve();
+    if (expenseLoading) return expenseLoading;
+    expenseLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "/assets/expense-form.js";
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return expenseLoading;
+  }
+
+  async function openExpenseForm() {
+    try {
+      await loadExpenseModule();
+    } catch (e) {
+      appendBotMessage("I couldn't load the expense form. Open seren.wales/staff and try there.");
+      return;
+    }
+    const msgs = $("#chatbot-messages");
+    if (!msgs || !window.SerenExpense) return;
+    window.SerenExpense.open({
+      mount: msgs,
+      name: localStorage.getItem("seren_staff_name") || "you",
+      getToken: getStoredToken,
+      call: callFunction,
+      onBot: appendBotMessage,
+      scroll: () => { msgs.scrollTop = msgs.scrollHeight; },
+      onExpired: () => {
+        appendBotMessage("Your session has expired — please log in again.");
+        clearToken();
+        setTimeout(() => enterPinMode(), 1200);
+      }
+    });
+  }
+
+  function wantsExpense(text) {
+    const t = String(text).toLowerCase();
+    if (/\bmileage\b/.test(t)) return false;
+    if (/^\s*(what|which|how|why|when|where|who|am i|are|is|does|do i|can i|could i)\b/.test(t)) return false;
+    if (/^\s*expenses?\s*$/.test(t)) return true;
+    if (/\bexpenses?\b|\bon.?call\b/.test(t)
+        && /form|claim|month|sheet|log|submit|add|send|open/.test(t)) return true;
+    return false;
+  }
+
+  function checkExpenseReminder() {
+    const t = getStoredToken();
+    if (!t) return;
+    callFunction({ action: "get_expense", token: t }).then((res) => {
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      const saved = res.journeyCount > 0
+        ? "You've got " + res.journeyCount + (res.journeyCount === 1 ? " entry" : " entries") + " saved on it so far."
+        : "There's nothing on it yet.";
+      appendBotMessage("Quick one — your expense claim for " + res.period_label + " hasn't gone in yet. "
+        + saved + " It needs sending by the 12th. Just say “expenses” to open it.");
+    }).catch(() => {});
+  }
+
   function wantsGift(text) {
     const t = String(text).toLowerCase();
     if (/\bgift\b|\bgifts\b|\bpresent\b|\btip\b|\btips\b|\bmoney\b|\bcash\b|\bvoucher\b|\bbequest\b|\blegacy\b|\bwill\b|£\s?\d/.test(t)
@@ -427,6 +489,11 @@
 
     if (wantsGift(question)) {
       openGiftForm();
+      return;
+    }
+
+    if (wantsExpense(question)) {
+      openExpenseForm();
       return;
     }
 

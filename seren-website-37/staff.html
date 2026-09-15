@@ -347,8 +347,9 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=6" defer></script>
-<script src="assets/gift-form.js?v=6" defer></script>
+<script src="assets/mileage-form.js?v=7" defer></script>
+<script src="assets/gift-form.js?v=7" defer></script>
+<script src="assets/expense-form.js?v=7" defer></script>
 <script>
 (function(){
   "use strict";
@@ -372,7 +373,8 @@
     "What can I claim for mileage and expenses?",
     "I'm struggling — what support is there?",
     "Claim extra mileage",
-    "Declare a gift or offer"
+    "Declare a gift or offer",
+    "My expense claim"
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -509,6 +511,11 @@
           openGiftForm();
           return;
         }
+        if (q === "My expense claim"){
+          me("Open my expense claim");
+          openExpenseForm();
+          return;
+        }
         ask(q);
       });
       wrap.appendChild(b);
@@ -540,6 +547,7 @@
       ? "Hi " + name + ". Ask me anything about pay, policies, HR or wellbeing. For anything about your rota, visits or timesheets, use Birdie. For anything urgent or about a client, speak to your team leader."
       : "Ask me anything about pay, policies, HR or wellbeing. For anything about your rota, visits or timesheets, use Birdie. For anything urgent or about a client, speak to your team leader.");
     showChips();
+    checkExpenseReminder();
     localStorage.setItem(K_VISITS, String(parseInt(localStorage.getItem(K_VISITS) || "0", 10) + 1));
     maybeOfferInstall();
   }
@@ -583,6 +591,11 @@
     if (wantsGiftForm(question)){
       me(question);
       openGiftForm();
+      return;
+    }
+    if (wantsExpenseForm(question)){
+      me(question);
+      openExpenseForm();
       return;
     }
     var t = token();
@@ -687,6 +700,35 @@
   }
   function wantsGiftForm(t){
     return !!(window.SerenGift && window.SerenGift.wants(t));
+  }
+
+  /* ── Monthly expense claim (assets/expense-form.js) ─────── */
+  function openExpenseForm(){
+    if (!window.SerenExpense) return;
+    window.SerenExpense.open({
+      mount: $("log"),
+      name: localStorage.getItem(K_NAME) || "you",
+      getToken: token,
+      call: call,
+      onBot: bot,
+      scroll: scroll,
+      onExpired: function(){ clearSession(); showSignin("Your session has ended. Sign in again."); }
+    });
+  }
+  function wantsExpenseForm(t){
+    return !!(window.SerenExpense && window.SerenExpense.wants(t));
+  }
+  function checkExpenseReminder(){
+    var t = token();
+    if (!t) return;
+    call({ action: "get_expense", token: t }).then(function(res){
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      var saved = res.journeyCount > 0
+        ? "You've got " + res.journeyCount + (res.journeyCount === 1 ? " entry" : " entries") + " saved on it so far."
+        : "There's nothing on it yet.";
+      bot("Quick one — your expense claim for " + res.period_label + " hasn't gone in yet. "
+        + saved + " It needs sending by the 12th. Just say “expenses” to open it.");
+    }).catch(function(){});
   }
 
   /* ── Wiring ────────────────────────────────────────────── */
