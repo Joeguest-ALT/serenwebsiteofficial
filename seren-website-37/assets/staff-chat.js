@@ -425,7 +425,7 @@
         ? "You've got " + res.journeyCount + (res.journeyCount === 1 ? " entry" : " entries") + " saved on it so far."
         : "There's nothing on it yet.";
       appendBotMessage("Quick one — your expense claim for " + res.period_label + " hasn't gone in yet. "
-        + saved + " It needs sending by the 12th. Just say “expenses” to open it.");
+        + saved + " It needs to be in by 11am on the 12th. Just say “expenses” to open it.");
     }).catch(() => {});
   }
 

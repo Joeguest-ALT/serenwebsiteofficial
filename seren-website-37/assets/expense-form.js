@@ -165,8 +165,8 @@
         + '<div class="sxf-who">Claiming as <b>' + esc(o.name || "you") + "</b></div>"
         + '<div class="sxf-period"><b>Claim period: ' + esc(periodShort()) + "</b>"
         + "<span>" + (sent
-            ? "Sent \u2014 you can still add to it until " + esc(deadline()) + "."
-            : "It saves as you go. Send it by " + esc(deadline()) + " \u2014 everything reaches payroll together on the 12th.")
+            ? "Sent \u2014 you can still add to it until 11am on " + esc(deadline()) + "."
+            : "It saves as you go. Get it in by 11am on " + esc(deadline()) + " \u2014 that\u2019s when everything goes to payroll. Later than that and it rolls to next month.")
         + "</span></div>";
 
       if (ch.length) {
@@ -276,7 +276,7 @@
                 ? " " + res.late + (res.late === 1 ? " entry is" : " entries are") + " outside the claim period \u2014 flagged for payroll to decide."
                 : "";
               o.onBot("Sent. " + money(res.totals.t) + " for this period \u2014 your reference is "
-                + res.reference + "." + late + " Everything goes to payroll together on "
+                + res.reference + "." + late + " Everything goes to payroll at 11am on "
                 + res.period_end_nice + ". You can still add to it before then \u2014 just open the form again.");
             }
           } else if (savedEl) {
