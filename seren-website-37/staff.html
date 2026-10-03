@@ -347,9 +347,9 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=8" defer></script>
-<script src="assets/gift-form.js?v=8" defer></script>
-<script src="assets/expense-form.js?v=8" defer></script>
+<script src="assets/mileage-form.js?v=9" defer></script>
+<script src="assets/gift-form.js?v=9" defer></script>
+<script src="assets/expense-form.js?v=9" defer></script>
 <script>
 (function(){
   "use strict";
@@ -453,9 +453,13 @@
     el.className = "msg msg-bot";
     el.innerHTML = String(text)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-      .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>')
+      .replace(/(^|[^"'>])(https?:\/\/[^\s<]+)/g, function (m, p, u) {
+        var t = (u.match(/[.,;:!?)*]+$/) || [""])[0];
+        if (t) u = u.slice(0, u.length - t.length);
+        return p + '<a href="' + u + '" target="_blank" rel="noopener">' + u + "</a>" + t;
+      })
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\n/g, "<br>")
       .replace(HEARTS, HEART_SVG);
     linkifyPhones(el);
