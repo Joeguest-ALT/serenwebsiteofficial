@@ -229,6 +229,7 @@
     showTextInput();
     appendBotMessage(welcomeFor(localStorage.getItem("seren_staff_name")));
     checkExpenseReminder();
+    checkMileageReminder();
     const sendBtn = $("#chatbot-send");
     const txtInput = $("#chatbot-text-input");
     if (txtInput && !txtInput.dataset.staffWired) {
@@ -444,8 +445,21 @@
 
   function wantsMileage(text) {
     const t = String(text).toLowerCase();
+    if (/^\s*(what|which|how much|how do|how does|why|when|where|who|am i|are|is|does|do i|can i|could i)\b/.test(t)) return false;
+    if (/^\s*mil(e)?age\s*$/.test(t)) return true;
     if (!/mileage|milage|miles|petrol|fuel/.test(t)) return false;
-    return /form|claim|expense|submit|fill|sheet|log|put in|send/.test(t);
+    return /form|claim|expense|submit|fill|sheet|log|put in|send|add|open/.test(t);
+  }
+
+  function checkMileageReminder() {
+    const t = getStoredToken();
+    if (!t) return;
+    callFunction({ action: "get_mileage", token: t }).then((res) => {
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      appendBotMessage("Quick one — your mileage claim for " + res.period_label + " hasn't been sent yet. You've got "
+        + res.journeyCount + (res.journeyCount === 1 ? " journey" : " journeys") + " saved, "
+        + Number(res.total_miles).toFixed(1) + " miles. It needs to be in by midnight on the final Sunday — just say “mileage” to open it.");
+    }).catch(() => {});
   }
 
   async function openMileageForm() {

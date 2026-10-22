@@ -347,9 +347,9 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=9" defer></script>
-<script src="assets/gift-form.js?v=9" defer></script>
-<script src="assets/expense-form.js?v=9" defer></script>
+<script src="assets/mileage-form.js?v=10" defer></script>
+<script src="assets/gift-form.js?v=10" defer></script>
+<script src="assets/expense-form.js?v=10" defer></script>
 <script>
 (function(){
   "use strict";
@@ -506,7 +506,6 @@
         wrap.remove();
         if (q === "Claim extra mileage"){
           me("I need to claim some extra mileage");
-          bot("Here's the mileage claim form. Fill it in and it goes straight to payroll.");
           openMileageForm();
           return;
         }
@@ -552,6 +551,7 @@
       : "Ask me anything about pay, policies, HR or wellbeing. For anything about your rota, visits or timesheets, use Birdie. For anything urgent or about a client, speak to your team leader.");
     showChips();
     checkExpenseReminder();
+    checkMileageReminder();
     localStorage.setItem(K_VISITS, String(parseInt(localStorage.getItem(K_VISITS) || "0", 10) + 1));
     maybeOfferInstall();
   }
@@ -721,6 +721,16 @@
   }
   function wantsExpenseForm(t){
     return !!(window.SerenExpense && window.SerenExpense.wants(t));
+  }
+  function checkMileageReminder(){
+    var t = token();
+    if (!t) return;
+    call({ action: "get_mileage", token: t }).then(function(res){
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      bot("Quick one — your mileage claim for " + res.period_label + " hasn't been sent yet. You've got "
+        + res.journeyCount + (res.journeyCount === 1 ? " journey" : " journeys") + " saved, "
+        + Number(res.total_miles).toFixed(1) + " miles. It needs to be in by midnight on the final Sunday — just say “mileage” to open it.");
+    }).catch(function(){});
   }
   function checkExpenseReminder(){
     var t = token();

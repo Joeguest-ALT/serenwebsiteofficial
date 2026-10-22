@@ -1,26 +1,18 @@
-/* Seren — mileage expense claim form.
+/* Seren — Carer mileage claim v2.
  *
- * Shared by the standalone /staff page and the website chat widget, so the
- * form only ever has to be fixed in one place.
- *
- * Host supplies an adapter:
- *   SerenMileage.open({
- *     mount,            // element to append the form to
- *     name,             // staff name for the "claiming as" line
- *     getToken,         // () => session token or null
- *     call,             // (payload) => Promise<json>
- *     onBot,            // (text) => void   — write a bot message
- *     onExpired,        // () => void       — session died
- *     scroll            // optional () => void
- *   })
+ * Shared by the standalone /staff page and the website chat widget.
+ * One claim per carer per 4-week period (Monday to Sunday, anchored to
+ * Monday 12 October 2026). It lives in the database against the carer's
+ * sign-in and builds up through the period: open, add, close, come back.
+ * Everything is swept to payroll together after midnight on the final
+ * Sunday. For journeys that aren't on the rota — rota travel is Birdie's.
  */
 (function (w) {
   "use strict";
   if (w.SerenMileage) return;
 
-  var K_DRAFT = "seren_mileage_draft";
-  var BRANCHES = ["Cardiff", "Port Talbot", "Caerphilly", "Bridgend", "Blaenau Gwent"];
-  /* Must stay in step with REASONS in the staff-chat edge function */
+  var open = false;
+
   var REASONS = [
     "Double run",
     "Shopping or outing with a client",
@@ -30,47 +22,53 @@
     "Office, training or meeting",
     "Other"
   ];
-  var open = false;
 
   var CSS = ""
     + ".smf{background:#fff;border:1.5px solid #E2E7EE;border-radius:16px;padding:18px;margin:8px 0 4px;"
     + "font-family:inherit;color:#0E2C53;line-height:1.5;box-sizing:border-box;width:100%;}"
     + ".smf *{box-sizing:border-box;}"
-    + ".smf h3{margin:0 0 3px;font-size:17px;font-weight:600;letter-spacing:-0.01em;color:#0E2C53;}"
-    + ".smf-sub{margin:0 0 16px;font-size:13px;color:#5B6B80;}"
-    + ".smf-who{background:#F1F4F8;border-radius:10px;padding:10px 13px;font-size:13.5px;margin-bottom:14px;}"
-    + ".smf-f{margin-bottom:13px;}"
-    + ".smf-f label{display:block;font-size:13px;font-weight:500;margin-bottom:5px;color:#0E2C53;}"
-    + ".smf-f select,.smf-f input{width:100%;min-height:46px;font-family:inherit;font-size:16px;padding:10px 12px;"
-    + "border:1.5px solid #E2E7EE;border-radius:10px;outline:none;color:#0E2C53;background:#fff;}"
-    + ".smf-f select:focus,.smf-f input:focus{border-color:#0E2C53;}"
-    + ".smf-row{border:1.5px solid #E2E7EE;border-radius:12px;padding:13px;margin-bottom:10px;}"
-    + ".smf-rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}"
-    + ".smf-rn{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#5B6B80;}"
-    + ".smf-del{background:none;border:none;color:#5B6B80;font-size:13px;cursor:pointer;font-family:inherit;"
-    + "min-height:32px;padding:0 4px;text-decoration:underline;}"
-    + ".smf-del:hover{color:#B3261E;}"
-    + ".smf-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}"
-    + ".smf-grid .smf-f{margin-bottom:0;}.smf-grid .smf-wide{grid-column:1 / -1;}"
-    + ".smf-add{width:100%;min-height:46px;background:#fff;border:1.5px dashed #E2E7EE;border-radius:11px;"
-    + "font-family:inherit;font-size:14.5px;font-weight:500;color:#0E2C53;cursor:pointer;margin-bottom:14px;}"
-    + ".smf-add:hover{border-color:#0E2C53;background:#FAFBFD;}"
-    + ".smf-tot{display:flex;justify-content:space-between;align-items:center;background:#0E2C53;"
-    + "border-radius:12px;padding:14px 16px;margin-bottom:14px;}"
-    + ".smf-tot span{color:rgba(255,255,255,.75);font-size:13.5px;}"
-    + ".smf-tot strong{color:#FBBD1E;font-size:22px;font-weight:600;}"
-    + ".smf-note{font-size:12px;color:#5B6B80;background:#FDF6E3;border-left:3px solid #FBBD1E;"
-    + "border-radius:7px;padding:11px 13px;margin-bottom:14px;}"
-    + ".smf-note b{color:#5A4300;}"
-    + ".smf-acts{display:flex;gap:9px;flex-wrap:wrap;}"
-    + ".smf-btn{flex:1 1 auto;min-height:50px;border-radius:11px;font-family:inherit;font-size:15px;"
-    + "font-weight:600;cursor:pointer;border:none;}"
-    + ".smf-go{background:#0E2C53;color:#fff;}.smf-go:hover{background:#14386a;}"
-    + ".smf-go:disabled{opacity:.5;cursor:not-allowed;}"
-    + ".smf-alt{background:#fff;border:1.5px solid #E2E7EE;color:#0E2C53;}.smf-alt:hover{border-color:#0E2C53;}"
-    + ".smf-cancel{background:none;border:none;color:#5B6B80;font-family:inherit;font-size:13.5px;"
-    + "cursor:pointer;min-height:44px;text-decoration:underline;}"
-    + ".smf-err{color:#B3261E;font-size:13.5px;font-weight:500;margin:11px 0 0;min-height:19px;}";
+    + ".smf-h{font-size:17px;font-weight:700;margin:0 0 4px;}"
+    + ".smf-sub{font-size:12.5px;color:#5B6B80;margin:0 0 12px;}"
+    + ".smf-who{background:#F1F4F8;border-radius:9px;padding:10px 12px;font-size:13px;margin:0 0 10px;}"
+    + ".smf-period{background:#FDF6E3;border-left:3px solid #FBBD1E;border-radius:8px;padding:10px 13px;margin:0 0 10px;}"
+    + ".smf-period b{display:block;font-size:13px;color:#5A4300;}"
+    + ".smf-period span{font-size:12px;color:#5A4300;}"
+    + ".smf-rule{background:#F1F4F8;border-radius:8px;padding:10px 13px;margin:0 0 14px;}"
+    + ".smf-rule b{display:block;font-size:12.5px;color:#0E2C53;}"
+    + ".smf-rule span{font-size:11.5px;color:#5B6B80;}"
+    + ".smf-lab{font-size:11px;font-weight:700;letter-spacing:.06em;color:#5B6B80;margin:14px 0 8px;}"
+    + ".smf-chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 4px;}"
+    + ".smf-chip{border:1.5px solid #E2E7EE;background:#fff;border-radius:14px;padding:7px 12px;"
+    + "font-family:inherit;font-size:12.5px;font-weight:500;color:#0E2C53;cursor:pointer;min-height:34px;}"
+    + ".smf-chip:hover{border-color:#0E2C53;}"
+    + ".smf-row{border:1.5px solid #E2E7EE;border-radius:11px;padding:10px;margin-bottom:8px;position:relative;}"
+    + ".smf-grid{display:flex;gap:8px;margin-bottom:8px;}"
+    + ".smf-f{flex:1;min-width:0;}"
+    + ".smf-f label{display:block;font-size:11px;font-weight:600;color:#5B6B80;margin-bottom:3px;}"
+    + ".smf input,.smf select{width:100%;min-height:44px;font-family:inherit;font-size:15px;padding:9px 11px;"
+    + "border:1.5px solid #E2E7EE;border-radius:9px;outline:none;color:#0E2C53;background:#fff;}"
+    + ".smf input:focus,.smf select:focus{border-color:#0E2C53;}"
+    + ".smf select:invalid{color:#9EA8B6;}"
+    + ".smf-late{display:inline-block;background:#FDF6E3;color:#5A4300;font-size:11px;font-weight:500;"
+    + "border-radius:8px;padding:3px 9px;margin-top:6px;}"
+    + ".smf-x{position:absolute;top:8px;right:10px;background:none;border:none;color:#9EA8B6;"
+    + "font-size:16px;cursor:pointer;min-height:24px;padding:0 4px;}"
+    + ".smf-x:hover{color:#B3261E;}"
+    + ".smf-add{display:block;width:100%;min-height:42px;border:1.5px solid #E2E7EE;border-radius:10px;"
+    + "background:#fff;font-family:inherit;font-size:13.5px;font-weight:500;color:#0E2C53;cursor:pointer;margin:2px 0 4px;}"
+    + ".smf-add:hover{border-color:#0E2C53;}"
+    + ".smf-tot{background:#0E2C53;border-radius:12px;padding:12px 14px;margin:14px 0 12px;color:#fff;"
+    + "display:flex;justify-content:space-between;align-items:center;font-size:13px;}"
+    + ".smf-tot .v{color:#FBBD1E;font-size:17px;font-weight:700;}"
+    + ".smf-acts{display:flex;gap:9px;}"
+    + ".smf-btn{flex:1;min-height:48px;border-radius:10px;font-family:inherit;font-size:14.5px;font-weight:700;"
+    + "cursor:pointer;border:none;background:#0E2C53;color:#fff;}"
+    + ".smf-btn:hover{background:#14386a;}.smf-btn:disabled{opacity:.5;cursor:not-allowed;}"
+    + ".smf-btn2{flex:1;min-height:48px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:500;"
+    + "cursor:pointer;border:1.5px solid #E2E7EE;background:#fff;color:#0E2C53;}"
+    + ".smf-btn2:hover{border-color:#0E2C53;}"
+    + ".smf-save{font-size:12px;color:#5B6B80;text-align:right;min-height:16px;margin:6px 0 0;}"
+    + ".smf-err{color:#B3261E;font-size:13px;font-weight:500;min-height:18px;margin:8px 0 0;}";
 
   function injectCss() {
     if (document.getElementById("seren-mileage-css")) return;
@@ -85,248 +83,288 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
   function escA(s) { return esc(s).replace(/"/g, "&quot;"); }
-
   function today() { return new Date().toISOString().slice(0, 10); }
-  function thisFriday() {
-    var d = new Date();
-    d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7));
-    return d.toISOString().slice(0, 10);
-  }
-
-  function loadDraft() {
-    try { return JSON.parse(localStorage.getItem(K_DRAFT) || "null"); } catch (e) { return null; }
-  }
-  function saveDraft(d) { try { localStorage.setItem(K_DRAFT, JSON.stringify(d)); } catch (e) {} }
-  function clearDraft() { try { localStorage.removeItem(K_DRAFT); } catch (e) {} }
 
   function openForm(o) {
-    if (open) return;
-    if (!o || !o.mount) return;
+    if (open || !o || !o.mount) return;
     open = true;
     injectCss();
 
-    var d = loadDraft() || {};
-    var st = {
-      branch: d.branch || "",
-      weekEnding: d.weekEnding || thisFriday(),
-      journeys: (d.journeys && d.journeys.length)
-        ? d.journeys : [{ date: today(), from: "", to: "", miles: "", reason: "", note: "" }]
-    };
-
     var box = document.createElement("div");
     box.className = "smf";
+    box.innerHTML = '<p class="smf-sub">Opening your claim…</p>';
     o.mount.appendChild(box);
-
     var scroll = o.scroll || function () {
       try { o.mount.scrollTop = o.mount.scrollHeight; } catch (e) {}
     };
+    scroll();
 
-    function total() {
-      return st.journeys.reduce(function (t, j) {
-        var m = parseFloat(j.miles);
-        return t + (isFinite(m) && m > 0 ? m : 0);
-      }, 0);
+    var st = { journeys: [], meta: null, status: "draft", ref: null };
+    var saveTimer = null, saving = false;
+
+    function fail(msg) {
+      open = false; box.remove();
+      if (o.onBot) o.onBot(msg);
     }
-    function persist() { saveDraft(st); }
+
+    var t = o.getToken ? o.getToken() : null;
+    if (!t) { open = false; box.remove(); if (o.onExpired) o.onExpired(); return; }
+
+    o.call({ action: "get_mileage", token: t })
+      .then(function (res) {
+        if (res && res.code === "AUTH") { open = false; box.remove(); if (o.onExpired) o.onExpired(); return; }
+        if (!res || !res.ok || !res.eligible) {
+          fail((res && res.error) || "Couldn't open your claim. Try again in a moment.");
+          return;
+        }
+        st.meta = res;
+        if (res.claim) {
+          st.journeys = (res.claim.journeys || []).slice();
+          st.status = res.claim.status || "draft";
+          st.ref = res.claim.claim_ref || null;
+        }
+        draw();
+      })
+      .catch(function () { fail("Couldn't open your claim. Check your signal and try again."); });
+
+    function isLate(dateStr) {
+      return dateStr && st.meta
+        && (dateStr < st.meta.period_start || dateStr > st.meta.period_end);
+    }
+
+    function totalMiles() {
+      var m = 0;
+      st.journeys.forEach(function (j) { var v = parseFloat(j.miles); if (v > 0) m += v; });
+      return Math.round(m * 10) / 10;
+    }
+
+    function chips() {
+      var seen = {}, out = [];
+      for (var i = st.journeys.length - 1; i >= 0 && out.length < 3; i--) {
+        var j = st.journeys[i];
+        if (!j.from || !j.to || !parseFloat(j.miles) || !j.reason) continue;
+        var key = j.from + "|" + j.to + "|" + j.miles;
+        if (seen[key]) continue;
+        seen[key] = 1;
+        out.push({ from: j.from, to: j.to, miles: j.miles, reason: j.reason });
+      }
+      return out;
+    }
+
+    function shortPlace(s) {
+      s = String(s || "");
+      return s.length > 20 ? s.slice(0, 19) + "…" : s;
+    }
+
+    function deadline() {
+      if (!st.meta) return "";
+      var p = st.meta.period_end.split("-");
+      return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]))
+        .toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+    }
+
+    function periodShort() {
+      return st.meta ? st.meta.period_label.replace(/ \d{4}/g, "") : "";
+    }
+
+    function reasonOptions(sel) {
+      var h = '<option value="" disabled' + (sel ? "" : " selected") + ' hidden>Pick a reason</option>';
+      REASONS.forEach(function (r) {
+        h += '<option value="' + escA(r) + '"' + (sel === r ? " selected" : "") + ">" + esc(r) + "</option>";
+      });
+      return h;
+    }
 
     function draw() {
-      var opts = ['<option value="">Choose your branch…</option>'].concat(
-        BRANCHES.map(function (b) {
-          return '<option value="' + b + '"' + (st.branch === b ? " selected" : "") + ">" + b + "</option>";
-        })).join("");
+      var sent = st.status === "sent";
+      var html = '<p class="smf-h">Mileage claim</p>'
+        + '<p class="smf-sub">For carers · journeys that aren’t on your rota.</p>'
+        + '<div class="smf-who">Claiming as <b>' + esc(o.name || "you") + "</b></div>"
+        + '<div class="smf-period"><b>Claim period: ' + esc(periodShort()) + "</b>"
+        + "<span>" + (sent
+            ? "Sent — you can still add to it until midnight on " + esc(deadline()) + "."
+            : "It saves as you go. Everything goes to payroll together after midnight on " + esc(deadline()) + ". Anything later rolls to the next period.")
+        + "</span></div>"
+        + '<div class="smf-rule"><b>Not for rota travel.</b>'
+        + "<span>Rota journeys are handled through Birdie. Claim here for extras — medication pick-ups, shopping with a client, hospital visits. Home to your first call, and your last call home, is your commute and doesn’t count.</span></div>";
 
-      var rows = st.journeys.map(function (j, i) {
-        return '<div class="smf-row" data-i="' + i + '">'
-          + '<div class="smf-rh"><span class="smf-rn">Journey ' + (i + 1) + "</span>"
-          + (st.journeys.length > 1 ? '<button type="button" class="smf-del" data-del="' + i + '">Remove</button>' : "")
-          + "</div><div class=\"smf-grid\">"
-          + '<div class="smf-f"><label>Date</label><input type="date" data-f="date" value="' + escA(j.date) + '" /></div>'
-          + '<div class="smf-f"><label>Miles</label><input type="text" inputmode="decimal" data-f="miles" value="'
-          + escA(j.miles) + '" placeholder="e.g. 3.4" /></div>'
-          + '<div class="smf-f smf-wide"><label>From</label><input type="text" data-f="from" value="'
-          + escA(j.from) + '" placeholder="Client initials, address, postcode" /></div>'
-          + '<div class="smf-f smf-wide"><label>To</label><input type="text" data-f="to" value="'
-          + escA(j.to) + '" placeholder="Client initials, address, postcode" /></div>'
-          + '<div class="smf-f smf-wide"><label>Why was this journey needed?</label>'
-          + '<select data-f="reason">'
-          + ['<option value="">Choose a reason…</option>'].concat(REASONS.map(function (r) {
-              return '<option value="' + escA(r) + '"' + (j.reason === r ? " selected" : "") + ">" + esc(r) + "</option>";
-            })).join("")
-          + "</select></div>"
-          + '<div class="smf-f smf-wide"><label>Anything else payroll should know?'
-          + '<span style="font-weight:400;color:#5B6B80"> (optional)</span></label>'
-          + '<input type="text" data-f="note" value="' + escA(j.note)
-          + '" maxlength="200" placeholder="e.g. covered NC\u2019s round at short notice" /></div>'
-          + "</div></div>";
-      }).join("");
+      var ch = chips();
+      if (ch.length) {
+        html += '<p class="smf-lab">ADD AGAIN</p><div class="smf-chips">'
+          + ch.map(function (c, i) {
+              return '<button type="button" class="smf-chip" data-chip="' + i + '">'
+                + esc(shortPlace(c.from)) + " – " + esc(shortPlace(c.to)) + " · " + esc(c.miles) + " mi</button>";
+            }).join("")
+          + "</div>";
+      }
 
-      box.innerHTML =
-          "<h3>Mileage expense claim</h3>"
-        + '<p class="smf-sub">For extra mileage Birdie hasn\u2019t picked up \u2014 double runs, shopping trips, outings and short-notice cover.</p>'
-        + '<div class="smf-who">Claiming as <strong>' + esc(o.name || "you") + "</strong></div>"
-        + '<div class="smf-f"><label>Branch</label><select id="smf-branch">' + opts + "</select></div>"
-        + '<div class="smf-f"><label>Week ending (Friday)</label><input type="date" id="smf-week" value="'
-        + escA(st.weekEnding) + '" /></div>'
-        + rows
-        + '<button type="button" class="smf-add" id="smf-add">+ Add another journey</button>'
-        + '<div class="smf-tot"><span>Total miles</span><strong id="smf-total">' + total().toFixed(1) + "</strong></div>"
-        + '<div class="smf-note"><b>Only from your first appointment onwards.</b> Home to your first call, and your '
-        + "last call back home, counts as your commute. Get claims in by <b>Friday</b> \u2014 they\u2019re paid every second Monday.</div>"
-        + '<div class="smf-acts"><button type="button" class="smf-btn smf-go" id="smf-send">Send to payroll</button>'
-        + '<button type="button" class="smf-btn smf-alt" id="smf-dl">Download a copy</button></div>'
-        + '<p class="smf-err" id="smf-err"></p>'
-        + '<div style="text-align:center"><button type="button" class="smf-cancel" id="smf-cancel">Cancel this claim</button></div>';
+      html += '<p class="smf-lab">JOURNEYS' + (st.journeys.length ? " · " + st.journeys.length + " SAVED" : "") + "</p>";
+      st.journeys.forEach(function (j, i) {
+        html += '<div class="smf-row">'
+          + '<button type="button" class="smf-x" data-del="' + i + '" aria-label="Remove">×</button>'
+          + '<div class="smf-grid">'
+          + '<div class="smf-f"><label>Date</label><input type="date" data-i="' + i + '" data-f="date" max="' + today() + '" value="' + escA(j.date || "") + '" /></div>'
+          + '<div class="smf-f"><label>Miles</label><input type="number" inputmode="decimal" min="0.1" max="500" step="0.1" data-i="' + i + '" data-f="miles" value="' + escA(j.miles || "") + '" /></div>'
+          + "</div>"
+          + '<div class="smf-f" style="margin-bottom:8px;"><label>From</label>'
+          + '<input type="text" maxlength="140" data-i="' + i + '" data-f="from" value="' + escA(j.from || "") + '" placeholder="e.g. Client’s home, CF23 9AH" /></div>'
+          + '<div class="smf-f" style="margin-bottom:8px;"><label>To</label>'
+          + '<input type="text" maxlength="140" data-i="' + i + '" data-f="to" value="' + escA(j.to || "") + '" placeholder="e.g. Boots, Albany Road" /></div>'
+          + '<div class="smf-f" style="margin-bottom:8px;"><label>What was it for?</label>'
+          + '<select data-i="' + i + '" data-f="reason" required>' + reasonOptions(j.reason || "") + "</select></div>"
+          + '<div class="smf-f"><label>Note' + (j.reason === "Other" ? " · needed for Other" : " · optional") + "</label>"
+          + '<input type="text" maxlength="200" data-i="' + i + '" data-f="note" value="' + escA(j.note || "") + '" /></div>'
+          + (isLate(j.date) ? '<span class="smf-late">Outside this claim period — payroll will decide</span>' : "")
+          + "</div>";
+      });
+      html += '<button type="button" class="smf-add" id="smf-add">+  Add a journey</button>';
 
+      html += '<div class="smf-tot"><span>Total this period</span><span class="v">' + totalMiles().toFixed(1) + " miles</span></div>"
+        + '<div class="smf-acts">'
+        + '<button type="button" class="smf-btn" id="smf-send">' + (sent ? "Send again" : "Send to payroll") + "</button>"
+        + '<button type="button" class="smf-btn2" id="smf-close">Close — it’s saved</button>'
+        + "</div>"
+        + '<p class="smf-save" id="smf-save"></p>'
+        + '<p class="smf-err" id="smf-err"></p>';
+
+      box.innerHTML = html;
       wire();
       scroll();
     }
 
-    function wire() {
-      box.querySelector("#smf-branch").addEventListener("change", function () {
-        st.branch = this.value; persist();
-      });
-      box.querySelector("#smf-week").addEventListener("change", function () {
-        st.weekEnding = this.value; persist();
-      });
+    function markDirty() {
+      var el = box.querySelector("#smf-save");
+      if (el) el.textContent = "";
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(function () { save(false); }, 900);
+    }
 
-      Array.prototype.forEach.call(box.querySelectorAll(".smf-row"), function (row) {
-        var i = parseInt(row.getAttribute("data-i"), 10);
-        Array.prototype.forEach.call(row.querySelectorAll("[data-f]"), function (inp) {
-          var ev = inp.tagName === "SELECT" ? "change" : "input";
-          inp.addEventListener(ev, function () {
-            st.journeys[i][this.getAttribute("data-f")] = this.value;
-            box.querySelector("#smf-total").textContent = total().toFixed(1);
-            persist();
-          });
-        });
-      });
-
-      Array.prototype.forEach.call(box.querySelectorAll("[data-del]"), function (b) {
-        b.addEventListener("click", function () {
-          st.journeys.splice(parseInt(this.getAttribute("data-del"), 10), 1);
-          persist(); draw();
-        });
-      });
-
-      box.querySelector("#smf-add").addEventListener("click", function () {
-        var last = st.journeys[st.journeys.length - 1] || {};
-        /* Journeys chain, so the next From is the last To — same as on paper */
-        st.journeys.push({ date: last.date || today(), from: last.to || "", to: "", miles: "", reason: last.reason || "", note: "" });
-        persist(); draw();
-        var rows = box.querySelectorAll(".smf-row");
-        var el = rows[rows.length - 1];
-        if (el) el.querySelector('[data-f="to"]').focus();
-      });
-
-      box.querySelector("#smf-dl").addEventListener("click", download);
-      box.querySelector("#smf-send").addEventListener("click", submit);
-      box.querySelector("#smf-cancel").addEventListener("click", function () {
-        if (!confirm("Throw this claim away?")) return;
-        clearDraft(); open = false; box.remove();
-        if (o.onBot) o.onBot("No problem \u2014 that claim's been cleared.");
+    function completeRows() {
+      return st.journeys.filter(function (j) {
+        if (!j.date || !String(j.from || "").trim() || !String(j.to || "").trim()) return false;
+        if (!(parseFloat(j.miles) > 0) || !j.reason) return false;
+        if (j.reason === "Other" && !String(j.note || "").trim()) return false;
+        return true;
+      }).map(function (j) {
+        return { date: j.date, from: String(j.from).trim(), to: String(j.to).trim(),
+                 miles: parseFloat(j.miles), reason: j.reason, note: String(j.note || "").trim() };
       });
     }
 
-    function validate() {
-      if (!st.branch) return "Choose which branch you work from.";
-      if (!st.weekEnding) return "Choose the week ending date.";
-      for (var i = 0; i < st.journeys.length; i++) {
-        var j = st.journeys[i], n = i + 1;
-        if (!j.date) return "Journey " + n + " needs a date.";
-        if (!String(j.from).trim()) return "Journey " + n + " needs a From.";
-        if (!String(j.to).trim()) return "Journey " + n + " needs a To.";
-        var m = parseFloat(j.miles);
-        if (!isFinite(m) || m <= 0) return "Journey " + n + " needs the miles.";
-        if (m > 500) return "Journey " + n + " looks too far \u2014 check the miles.";
-        if (!j.reason) return "Journey " + n + " needs a reason.";
-        if (j.reason === "Other" && !String(j.note).trim()) {
-          return "Journey " + n + " is marked Other \u2014 say briefly what it was for.";
-        }
-      }
-      return null;
-    }
+    function save(isSend, btn) {
+      if (saving && !isSend) return;
+      var t2 = o.getToken ? o.getToken() : null;
+      if (!t2) { open = false; box.remove(); if (o.onExpired) o.onExpired(); return; }
+      var err = box.querySelector("#smf-err");
+      var savedEl = box.querySelector("#smf-save");
+      saving = true;
 
-    function cleaned() {
-      return st.journeys.map(function (j) {
-        return {
-          date: j.date,
-          from: String(j.from).trim(),
-          to: String(j.to).trim(),
-          miles: Math.round(parseFloat(j.miles) * 10) / 10,
-          reason: String(j.reason || "").trim(),
-          note: String(j.note || "").trim()
-        };
-      });
-    }
-
-    function download() {
-      var err = validate();
-      var errEl = box.querySelector("#smf-err");
-      if (err) { errEl.textContent = err; return; }
-      errEl.textContent = "";
-      var q = function (v) {
-        v = String(v);
-        return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
-      };
-      var lines = ["Employee,Branch,Week ending",
-        [o.name || "", st.branch, st.weekEnding].map(q).join(","),
-        "", "Date,From,To,Miles,Reason,Note"];
-      cleaned().forEach(function (j) { lines.push([j.date, j.from, j.to, j.miles, j.reason, j.note].map(q).join(",")); });
-      lines.push(",,Total," + total().toFixed(1) + ",,");
-      var blob = new Blob([lines.join("\n")], { type: "text/csv" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "mileage-" + st.weekEnding + ".csv";
-      document.body.appendChild(a); a.click();
-      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 400);
-    }
-
-    function submit() {
-      var errEl = box.querySelector("#smf-err");
-      var err = validate();
-      if (err) { errEl.textContent = err; return; }
-      errEl.textContent = "";
-
-      var t = o.getToken ? o.getToken() : null;
-      if (!t) { open = false; box.remove(); if (o.onExpired) o.onExpired(); return; }
-
-      var btn = box.querySelector("#smf-send");
-      btn.disabled = true; btn.textContent = "Sending\u2026";
-
-      o.call({
-        action: "submit_mileage",
-        token: t,
-        claim: { branch: st.branch, weekEnding: st.weekEnding, journeys: cleaned() }
-      }).then(function (res) {
-        if (res && res.ok) {
-          clearDraft(); open = false; box.remove();
-          if (o.onBot) {
-            o.onBot("Sent. **" + res.totalMiles + " miles** across " + res.journeys
-              + (res.journeys === 1 ? " journey" : " journeys") + ", week ending " + res.weekEnding
-              + ", has gone to payroll.\n\nYour reference is " + String(res.reference).slice(0, 8)
-              + ". Claims in by Friday are paid the following second Monday.");
+      o.call({ action: isSend ? "send_mileage" : "save_mileage", token: t2, mileage: { journeys: completeRows() } })
+        .then(function (res) {
+          saving = false;
+          if (res && res.code === "AUTH") { open = false; box.remove(); if (o.onExpired) o.onExpired(); return; }
+          if (!res || !res.ok) {
+            if (isSend) {
+              if (err) err.textContent = (res && res.error) || "That didn't send. Try again in a moment.";
+              if (btn) { btn.disabled = false; btn.textContent = st.status === "sent" ? "Send again" : "Send to payroll"; }
+            }
+            return;
           }
-        } else if (res && res.code === "AUTH") {
-          open = false; box.remove();
-          if (o.onExpired) o.onExpired();
-        } else {
-          errEl.textContent = (res && res.error) || "That didn't send. Try again in a moment.";
-          btn.disabled = false; btn.textContent = "Send to payroll";
-        }
-      }).catch(function () {
-        errEl.textContent = "No connection. Your claim is saved on this device \u2014 try again when you have signal.";
-        btn.disabled = false; btn.textContent = "Send to payroll";
-      });
+          st.ref = res.reference || st.ref;
+          if (isSend) {
+            open = false; box.remove();
+            if (o.onBot) {
+              var late = res.late > 0
+                ? " " + res.late + (res.late === 1 ? " journey is" : " journeys are") + " outside the claim period — flagged for payroll to decide."
+                : "";
+              o.onBot("Sent. " + res.total.toFixed(1) + " miles — " + res.journeys
+                + (res.journeys === 1 ? " journey" : " journeys") + " — your reference is " + res.reference + "."
+                + late + " Everything goes to payroll together after midnight on " + res.period_end_nice
+                + ". You can still add to it before then — just say “mileage”.");
+            }
+          } else if (savedEl) {
+            savedEl.textContent = "Saved";
+          }
+        })
+        .catch(function () {
+          saving = false;
+          if (isSend) {
+            if (err) err.textContent = "That didn't send — but everything is saved. Try again when you have signal.";
+            if (btn) { btn.disabled = false; btn.textContent = st.status === "sent" ? "Send again" : "Send to payroll"; }
+          }
+        });
     }
 
-    draw();
+    function wire() {
+      box.querySelectorAll("input,select").forEach(function (inp) {
+        inp.addEventListener("input", function () {
+          var i = this.getAttribute("data-i"), fld = this.getAttribute("data-f");
+          if (i === null) return;
+          st.journeys[+i][fld] = this.value;
+          if (fld === "miles") {
+            var tot = box.querySelector(".smf-tot .v");
+            if (tot) tot.textContent = totalMiles().toFixed(1) + " miles";
+          }
+          markDirty();
+        });
+        inp.addEventListener("change", function () {
+          var fld = this.getAttribute("data-f");
+          if (fld === "date" || fld === "reason") draw();
+        });
+      });
+
+      box.querySelectorAll("[data-chip]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var c = chips()[+this.getAttribute("data-chip")];
+          if (!c) return;
+          st.journeys.push({ date: today(), from: c.from, to: c.to, miles: c.miles, reason: c.reason, note: "" });
+          markDirty(); draw();
+        });
+      });
+
+      var add = box.querySelector("#smf-add");
+      if (add) add.addEventListener("click", function () {
+        st.journeys.push({ date: today(), from: "", to: "", miles: "", reason: "", note: "" });
+        draw();
+        var rows = box.querySelectorAll('[data-f="from"]');
+        if (rows.length) rows[rows.length - 1].focus();
+      });
+
+      box.querySelectorAll("[data-del]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          st.journeys.splice(+this.getAttribute("data-del"), 1);
+          markDirty(); draw();
+        });
+      });
+
+      var send = box.querySelector("#smf-send");
+      if (send) send.addEventListener("click", function () {
+        var rows = completeRows();
+        if (rows.length === 0) {
+          box.querySelector("#smf-err").textContent = "There are no finished journeys on the claim yet.";
+          return;
+        }
+        var incomplete = st.journeys.length - rows.length;
+        if (incomplete > 0 && !confirm("Some journeys aren't finished and won't be included. Send anyway?")) return;
+        this.disabled = true; this.textContent = "Sending…";
+        save(true, this);
+      });
+
+      var close = box.querySelector("#smf-close");
+      if (close) close.addEventListener("click", function () {
+        if (saveTimer) { clearTimeout(saveTimer); save(false); }
+        open = false; box.remove();
+        if (o.onBot) o.onBot("Saved. Open it again any time — just say “mileage”.");
+      });
+    }
   }
 
-  /* Recognise a mileage request without relying on the model to spot it */
   function wants(text) {
     var t = String(text).toLowerCase();
+    if (/^\s*(what|which|how much|how do|how does|why|when|where|who|am i|are|is|does|do i|can i|could i)\b/.test(t)) return false;
+    if (/^\s*mil(e)?age\s*$/.test(t)) return true;
     if (!/mileage|milage|miles|petrol|fuel/.test(t)) return false;
-    return /form|claim|expense|submit|fill|sheet|log|put in|send/.test(t);
+    return /form|claim|expense|submit|fill|sheet|log|put in|send|add|open/.test(t);
   }
 
   w.SerenMileage = {
