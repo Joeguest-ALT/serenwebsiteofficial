@@ -347,9 +347,10 @@
   </symbol>
 </svg>
 
-<script src="assets/mileage-form.js?v=10" defer></script>
-<script src="assets/gift-form.js?v=10" defer></script>
-<script src="assets/expense-form.js?v=10" defer></script>
+<script src="assets/mileage-form.js?v=11" defer></script>
+<script src="assets/gift-form.js?v=11" defer></script>
+<script src="assets/expense-form.js?v=11" defer></script>
+<script src="assets/timesheet-form.js?v=11" defer></script>
 <script>
 (function(){
   "use strict";
@@ -374,7 +375,8 @@
     "I'm struggling — what support is there?",
     "Claim extra mileage",
     "Declare a gift or offer",
-    "My expense claim"
+    "My expense claim",
+    "My timesheet"
   ];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -519,6 +521,11 @@
           openExpenseForm();
           return;
         }
+        if (q === "My timesheet"){
+          me("Open my timesheet");
+          openTimesheetForm();
+          return;
+        }
         ask(q);
       });
       wrap.appendChild(b);
@@ -552,6 +559,7 @@
     showChips();
     checkExpenseReminder();
     checkMileageReminder();
+    checkTimesheetReminder();
     localStorage.setItem(K_VISITS, String(parseInt(localStorage.getItem(K_VISITS) || "0", 10) + 1));
     maybeOfferInstall();
   }
@@ -595,6 +603,11 @@
     if (wantsGiftForm(question)){
       me(question);
       openGiftForm();
+      return;
+    }
+    if (wantsTimesheetForm(question)){
+      me(question);
+      openTimesheetForm();
       return;
     }
     if (wantsExpenseForm(question)){
@@ -721,6 +734,35 @@
   }
   function wantsExpenseForm(t){
     return !!(window.SerenExpense && window.SerenExpense.wants(t));
+  }
+
+  /* ── Timesheet (assets/timesheet-form.js) ────────────────── */
+  function openTimesheetForm(){
+    if (!window.SerenTimesheet) return;
+    window.SerenTimesheet.open({
+      mount: $("log"),
+      name: localStorage.getItem(K_NAME) || "you",
+      getToken: token,
+      call: call,
+      onBot: bot,
+      scroll: scroll,
+      onExpired: function(){ clearSession(); showSignin("Your session has ended. Sign in again."); }
+    });
+  }
+  function wantsTimesheetForm(t){
+    return !!(window.SerenTimesheet && window.SerenTimesheet.wants(t));
+  }
+  function checkTimesheetReminder(){
+    var t = token();
+    if (!t) return;
+    call({ action: "get_timesheet", token: t }).then(function(res){
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      var saved = res.dayCount > 0
+        ? "You've got " + res.dayCount + (res.dayCount === 1 ? " day" : " days") + " filled in."
+        : "Nothing is filled in yet.";
+      bot("Quick one — your timesheet for " + res.period_label + " hasn't been sent. "
+        + saved + " It needs to be in by midnight on the final Sunday — just say “timesheet” to open it.");
+    }).catch(function(){});
   }
   function checkMileageReminder(){
     var t = token();

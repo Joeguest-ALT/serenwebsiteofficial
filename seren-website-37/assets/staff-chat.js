@@ -230,6 +230,7 @@
     appendBotMessage(welcomeFor(localStorage.getItem("seren_staff_name")));
     checkExpenseReminder();
     checkMileageReminder();
+    checkTimesheetReminder();
     const sendBtn = $("#chatbot-send");
     const txtInput = $("#chatbot-text-input");
     if (txtInput && !txtInput.dataset.staffWired) {
@@ -443,6 +444,66 @@
     return false;
   }
 
+  let timesheetLoading = null;
+  function loadTimesheetModule() {
+    if (window.SerenTimesheet) return Promise.resolve();
+    if (timesheetLoading) return timesheetLoading;
+    timesheetLoading = new Promise((resolve, reject) => {
+      const sc = document.createElement("script");
+      sc.src = "/assets/timesheet-form.js";
+      sc.onload = resolve;
+      sc.onerror = reject;
+      document.head.appendChild(sc);
+    });
+    return timesheetLoading;
+  }
+
+  async function openTimesheetForm() {
+    try {
+      await loadTimesheetModule();
+    } catch (e) {
+      appendBotMessage("I couldn't load the timesheet. Open seren.wales/staff and try there.");
+      return;
+    }
+    const msgs = $("#chatbot-messages");
+    if (!msgs || !window.SerenTimesheet) return;
+    window.SerenTimesheet.open({
+      mount: msgs,
+      name: localStorage.getItem("seren_staff_name") || "you",
+      getToken: getStoredToken,
+      call: callFunction,
+      onBot: appendBotMessage,
+      scroll: () => { msgs.scrollTop = msgs.scrollHeight; },
+      onExpired: () => {
+        appendBotMessage("Your session has expired — please log in again.");
+        clearToken();
+        setTimeout(() => enterPinMode(), 1200);
+      }
+    });
+  }
+
+  function wantsTimesheet(text) {
+    const t = String(text).toLowerCase();
+    if (/^\s*(what|which|how many|how much|how do|how does|why|when|where|who|am i|are|is|does|do i|can i|could i)\b/.test(t)) return false;
+    if (/^\s*time\s?sheet\s*$/.test(t)) return true;
+    if (/time\s?sheet/.test(t)) return true;
+    if (/\bhours\b/.test(t) && /\b(log|submit|fill|enter|send|add|record|open)\b/.test(t)) return true;
+    return false;
+  }
+
+  function checkTimesheetReminder() {
+    const t = getStoredToken();
+    if (!t) return;
+    callFunction({ action: "get_timesheet", token: t }).then((res) => {
+      if (!res || !res.ok || !res.eligible || !res.remind) return;
+      const saved = res.dayCount > 0
+        ? "You've got " + res.dayCount + (res.dayCount === 1 ? " day" : " days") + " filled in."
+        : "Nothing is filled in yet.";
+      appendBotMessage("Quick one — your timesheet for " + res.period_label + " hasn't been sent. "
+        + saved + " It needs to be in by midnight on the final Sunday — just say “timesheet” to open it.");
+    }).catch(() => {});
+  }
+
   function wantsMileage(text) {
     const t = String(text).toLowerCase();
     if (/^\s*(what|which|how much|how do|how does|why|when|where|who|am i|are|is|does|do i|can i|could i)\b/.test(t)) return false;
@@ -507,6 +568,11 @@
 
     if (wantsGift(question)) {
       openGiftForm();
+      return;
+    }
+
+    if (wantsTimesheet(question)) {
+      openTimesheetForm();
       return;
     }
 
