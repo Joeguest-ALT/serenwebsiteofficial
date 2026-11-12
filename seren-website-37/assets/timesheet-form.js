@@ -3,7 +3,8 @@
  * Shared by the standalone /staff page and the website chat widget.
  * One timesheet per person per 4-week period (Monday to Sunday, same
  * cycles as the mileage claim). Hours only — mileage has its own claim.
- * Breaks are unpaid: paid hours = care + branch - break.
+ * Branch hours only. Care hours are logged on Birdie.
+ * Breaks are unpaid: paid hours = branch - break.
  * Swept to payroll (CC care managers) after midnight on the final Sunday.
  */
 (function (w) {
@@ -109,15 +110,14 @@
       .catch(function () { fail("Couldn't open your timesheet. Check your signal and try again."); });
 
     function totals() {
-      var c = 0, b = 0, k = 0;
+      var b = 0, k = 0;
       st.days.forEach(function (d) {
-        c += parseFloat(d.care) || 0;
         b += parseFloat(d.branch) || 0;
         k += parseFloat(d.brk) || 0;
       });
-      var paid = Math.max(0, c + b - k);
+      var paid = Math.max(0, b - k);
       var r = function (n) { return Math.round(n * 100) / 100; };
-      return { c: r(c), b: r(b), k: r(k), paid: r(paid) };
+      return { b: r(b), k: r(k), paid: r(paid) };
     }
 
     function deadline() {
@@ -141,13 +141,13 @@
       var maxDate = today() < st.meta.period_end ? today() : st.meta.period_end;
 
       var html = '<p class="stf-h">Timesheet</p>'
-        + '<p class="stf-sub">For team leaders and supervisors · hours only — mileage has its own claim.</p>'
+        + '<p class="stf-sub">For team leaders and supervisors. Branch hours only: care calls are logged on Birdie, and mileage has its own claim.</p>'
         + '<div class="stf-who">Filling in as <b>' + esc(o.name || "you") + "</b></div>"
         + '<div class="stf-period"><b>Period: ' + esc(periodShort()) + "</b>"
         + "<span>" + (sent
-            ? "Sent — you can still add to it until midnight on " + esc(deadline()) + "."
-            : "Fill in as you go — it saves itself. Everything reaches payroll together after midnight on " + esc(deadline()) + ".")
-        + " Breaks aren’t paid: enter yours and it comes off the total. Only out on care calls? Leave branch at 0, and the other way round.</span></div>";
+            ? "Sent. You can still add to it until midnight on " + esc(deadline()) + "."
+            : "Fill in as you go. It saves itself. Everything reaches payroll together after midnight on " + esc(deadline()) + ".")
+        + " Breaks aren’t paid: enter yours and it comes off the total.</span></div>";
 
       html += '<p class="stf-lab">DAYS' + (st.days.length ? " · " + st.days.length + " FILLED IN" : "") + "</p>";
       st.days.forEach(function (d, i) {
@@ -158,7 +158,6 @@
           + '<input type="date" data-i="' + i + '" data-f="date" min="' + escA(st.meta.period_start) + '" max="' + escA(maxDate) + '" value="' + escA(d.date || "") + '" /></div>'
           + "</div>"
           + '<div class="stf-grid">'
-          + '<div class="stf-f"><label>Care hours</label><input type="number" inputmode="decimal" min="0" max="24" step="0.25" data-i="' + i + '" data-f="care" value="' + escA(d.care || "") + '" placeholder="0" /></div>'
           + '<div class="stf-f"><label>Branch hours</label><input type="number" inputmode="decimal" min="0" max="24" step="0.25" data-i="' + i + '" data-f="branch" value="' + escA(d.branch || "") + '" placeholder="0" /></div>'
           + '<div class="stf-f"><label>Break</label><input type="number" inputmode="decimal" min="0" max="24" step="0.25" data-i="' + i + '" data-f="brk" value="' + escA(d.brk || "") + '" placeholder="0.5" /></div>'
           + "</div>"
@@ -167,12 +166,12 @@
       html += '<button type="button" class="stf-add" id="stf-add">+  Add a day</button>';
 
       html += '<div class="stf-tot">'
-        + '<div class="m">Care ' + tt.c.toFixed(1) + " + Branch " + tt.b.toFixed(1) + " − Break " + tt.k.toFixed(1) + " (unpaid)</div>"
+        + '<div class="m">Branch ' + tt.b.toFixed(1) + " − Break " + tt.k.toFixed(1) + " (unpaid)</div>"
         + '<div class="stf-grand"><span>Paid hours this period</span><span class="v">' + tt.paid.toFixed(1) + "</span></div>"
         + "</div>"
         + '<div class="stf-acts">'
         + '<button type="button" class="stf-btn" id="stf-send">' + (sent ? "Send again" : "Send to payroll") + "</button>"
-        + '<button type="button" class="stf-btn2" id="stf-close">Close — it’s saved</button>'
+        + '<button type="button" class="stf-btn2" id="stf-close">Close, it’s saved</button>'
         + "</div>"
         + '<p class="stf-save" id="stf-save"></p>'
         + '<p class="stf-err" id="stf-err"></p>';
@@ -191,11 +190,11 @@
 
     function completeRows() {
       return st.days.filter(function (d) {
-        var c = parseFloat(d.care) || 0, b = parseFloat(d.branch) || 0;
-        return d.date && (c + b) > 0;
+        var b = parseFloat(d.branch) || 0;
+        return d.date && b > 0;
       }).map(function (d) {
         return { date: d.date,
-                 care: parseFloat(d.care) || 0,
+                 care: 0,
                  branch: parseFloat(d.branch) || 0,
                  brk: parseFloat(d.brk) || 0 };
       });
@@ -225,9 +224,9 @@
             open = false; box.remove();
             if (o.onBot) {
               o.onBot("Sent. " + res.totals.paid.toFixed(1) + " paid hours across " + res.dayCount
-                + (res.dayCount === 1 ? " day" : " days") + " — your reference is " + res.reference
+                + (res.dayCount === 1 ? " day" : " days") + ". Your reference is " + res.reference
                 + ". It reaches payroll, with your care manager copied in, after midnight on " + res.period_end_nice
-                + ". You can still add to it before then — just say “timesheet”.");
+                + ". You can still add to it before then. Just say “timesheet”.");
             }
           } else if (savedEl) {
             savedEl.textContent = "Saved";
@@ -236,7 +235,7 @@
         .catch(function () {
           saving = false;
           if (isSend) {
-            if (err) err.textContent = "That didn't send — but everything is saved. Try again when you have signal.";
+            if (err) err.textContent = "That didn't send, but everything is saved. Try again when you have signal.";
             if (btn) { btn.disabled = false; btn.textContent = st.status === "sent" ? "Send again" : "Send to payroll"; }
           }
         });
@@ -251,7 +250,7 @@
           if (fld !== "date") {
             var tt = totals();
             var m = box.querySelector(".stf-tot .m");
-            if (m) m.textContent = "Care " + tt.c.toFixed(1) + " + Branch " + tt.b.toFixed(1) + " − Break " + tt.k.toFixed(1) + " (unpaid)";
+            if (m) m.textContent = "Branch " + tt.b.toFixed(1) + " − Break " + tt.k.toFixed(1) + " (unpaid)";
             var g = box.querySelector(".stf-grand .v");
             if (g) g.textContent = tt.paid.toFixed(1);
           }
@@ -276,9 +275,9 @@
           pick = dt.toISOString().slice(0, 10);
         }
         if (pick < st.meta.period_start) pick = "";
-        st.days.push({ date: pick, care: "", branch: "", brk: "" });
+        st.days.push({ date: pick, branch: "", brk: "" });
         draw();
-        var rows = box.querySelectorAll('[data-f="care"]');
+        var rows = box.querySelectorAll('[data-f="branch"]');
         if (rows.length) rows[rows.length - 1].focus();
       });
 
@@ -306,7 +305,7 @@
       if (close) close.addEventListener("click", function () {
         if (saveTimer) { clearTimeout(saveTimer); save(false); }
         open = false; box.remove();
-        if (o.onBot) o.onBot("Saved. Open it again any time — just say “timesheet”.");
+        if (o.onBot) o.onBot("Saved. Open it again any time. Just say “timesheet”.");
       });
     }
   }
